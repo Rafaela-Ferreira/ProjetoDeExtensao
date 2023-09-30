@@ -2,26 +2,26 @@
 #include <stdlib.h>
 #include <string.h>
 
-// Definindo a estrutura para armazenar informações do usuário
+// Definindo a estrutura para armazenar informaï¿½ï¿½es do usuï¿½rio
 struct Usuario {
   char nome[50];
   char senha[20];
 };
 
-// Função para verificar o login
+// Funï¿½ï¿½o para verificar o login
 int verificarLogin(struct Usuario usuarios[], int numUsuarios, char nome[],
                    char senha[]) {
   for (int i = 0; i < numUsuarios; i++) {
     if (strcmp(usuarios[i].nome, nome) == 0 &&
         strcmp(usuarios[i].senha, senha) == 0) {
-      return i; // Retorna o índice do usuário se o login for bem-sucedido
+      return i; // Retorna o ï¿½ndice do usuï¿½rio se o login for bem-sucedido
     }
   }
   return -1; // Retorna -1 se o login falhar
 }
 
 int main() {
-  // Defina os dados do usuário. Isso deve ser feito de forma mais segura em um
+  // Defina os dados do usuï¿½rio. Isso deve ser feito de forma mais segura em um
   // ambiente real.
   struct Usuario usuarios[2];
   strcpy(usuarios[0].nome, "usuario1");
@@ -40,7 +40,7 @@ int main() {
   while (1) { // Loop principal
     if (usuarioLogado == -1) {
       printf("Bem-vindo!\n");
-      printf("Nome de usuário: ");
+      printf("Nome de usuï¿½rio: ");
       scanf("%s", nome);
       printf("Senha: ");
       scanf("%s", senha);
@@ -54,39 +54,111 @@ int main() {
       printf("\n*** Menu Principal ***\n");
       printf("1. Cadastro de Clientes\n");
       printf("2. Agenda de Visitas\n");
-      printf("3. Agenda de Diárias\n");
+      printf("3. Agenda de Diï¿½rias\n");
       printf("4. Contrato\n");
       printf("5. Calendario\n");
       printf("6. Sair\n");
-      printf("Escolha uma opção: ");
+      printf("Escolha uma opï¿½ï¿½o: ");
       scanf("%d", &opcao);
 
       switch (opcao) {
       case 1:
-        printf("Você selecionou Cadastro de Clientes.\n");
-        // Coloque a lógica do cadastro de clientes aqui
+        printf("Vocï¿½ selecionou Cadastro de Clientes.\n");
+        // Coloque a lï¿½gica do cadastro de clientes aqui
         break;
       case 2:
-        printf("Você selecionou Agenda de Visitas.\n");
-        // Coloque a lógica da agenda de visitas aqui
+        printf("Vocï¿½ selecionou Agenda de Visitas.\n");
+        // Coloque a lï¿½gica da agenda de visitas aqui
         break;
       case 3:
-        printf("Você selecionou Agenda de Diárias.\n");
-        // Coloque a lógica da agenda de diárias aqui
+        printf("Vocï¿½ selecionou Agenda de Diï¿½rias.\n");
+        // Coloque a lï¿½gica da agenda de diï¿½rias aqui
         break;
       case 4:
-        printf("Você selecionou Contrato.\n");
-        // Coloque a lógica do contrato aqui
+        printf("Vocï¿½ selecionou Contrato.\n");
+        // Coloque a lï¿½gica do contrato aqui
         break;
       case 5:
-        printf("Você selecionou Calendario.\n");
-        // Coloque a lógica do contrato aqui
+        printf("Vocï¿½ selecionou Calendario.\n");
+        // Coloque a lï¿½gica do calendario aqui
+        char *diasSemana[] = {"Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sab"};
+        int mes, ano;
+
+        while (1) {
+          printf("Digite o ano (entre 2023 e 2100): ");
+          scanf("%d", &ano);
+
+          if (ano >= 2023 && ano <= 2100) {
+            break; // Sai do loop se o ano for vÃ¡lido.
+          } else {
+            printf("Ano invalido.\n");
+          }
+        }
+        while (1) {
+          printf("Digite o mes (entre 1 e 12): ");
+          scanf("%d", &mes);
+
+          if (mes >= 1 && mes <= 12) {
+            printf("Mes invalido.\n");
+            break; // Sai do loop se o MÃªs for vÃ¡lido.
+          } else {
+            printf("MÃªs invalido.\n");
+          }
+        }
+        // atÃ© aqui estÃ¡ validado!!
+
+        int diasNoMes[] = {
+            0,  31, 28 + ((ano % 4 == 0 && ano % 100 != 0) || ano % 400 == 0),
+            31, 30, 31,
+            30, 31, 31,
+            30, 31, 30,
+            31};
+        char calendario[6][7]; // Matriz 6x7 para armazenar os nÃºmeros dos dias
+                               // do mÃªs.
+
+        // Preencher o calendÃ¡rio com espaÃ§os em branco.
+        for (int i = 0; i < 6; i++) {
+          for (int j = 0; j < 7; j++) {
+            calendario[i][j] = ' ';
+          }
+        }
+
+        // Preencher o calendÃ¡rio com os nÃºmeros dos dias do mÃªs.
+        int dia = 1;
+        int diaDaSemana = 0; // ComeÃ§a no domingo.
+
+        for (int i = 0; i < 6; i++) {
+          for (int j = diaDaSemana; j < 7; j++) {
+            if (dia <= diasNoMes[mes]) {
+              calendario[i][j] = dia + '0';
+              dia++;
+            }
+          }
+          diaDaSemana = 0; // Reinicia no domingo apÃ³s a primeira linha.
+        }
+
+        // Imprimir o cabeÃ§alho do calendÃ¡rio.
+        printf("\nCalendario para %d/%d\n", mes, ano);
+        for (int i = 0; i < 7; i++) {
+          printf("%s ", diasSemana[i]);
+        }
+        printf("\n");
+
+        // Imprimir o calendÃ¡rio.
+        for (int i = 0; i < 6; i++) {
+          for (int j = 0; j < 7; j++) {
+            printf("%c ", calendario[i][j]);
+          }
+          printf("\n");
+        }
+
+        return 0;
         break;
       case 6:
         printf("Saindo...\n");
         exit(0); // Saia do programa
       default:
-        printf("Opção inválida. Tente novamente.\n");
+        printf("Opï¿½ï¿½o invï¿½lida. Tente novamente.\n");
       }
     }
   }
