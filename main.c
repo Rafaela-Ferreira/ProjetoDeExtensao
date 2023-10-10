@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <locale.h>
 
 // Definindo a estrutura para armazenar informa��es do usu�rio
 struct Usuario {
@@ -21,6 +22,7 @@ int verificarLogin(struct Usuario usuarios[], int numUsuarios, char nome[],
 }
 
 int main() {
+  setlocale(LC_ALL, "Portuguese");
   // Defina os dados do usu�rio.
   struct Usuario usuarios[2];
   strcpy(usuarios[0].nome, "usuario1");
