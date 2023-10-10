@@ -21,8 +21,7 @@ int verificarLogin(struct Usuario usuarios[], int numUsuarios, char nome[],
 }
 
 int main() {
-  // Defina os dados do usu�rio. Isso deve ser feito de forma mais segura em um
-  // ambiente real.
+  // Defina os dados do usu�rio.
   struct Usuario usuarios[2];
   strcpy(usuarios[0].nome, "usuario1");
   strcpy(usuarios[0].senha, "senha1");
@@ -81,14 +80,13 @@ int main() {
       case 5:
         printf("Voc� selecionou Calendario.\n");
         // Coloque a l�gica do calendario aqui
-        char *diasSemana[] = {"Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sab"};
         int mes, ano;
 
         while (1) {
-          printf("Digite o ano (entre 2023 e 2100): ");
+          printf("Digite o ano (entre 2000 e 2100): ");
           scanf("%d", &ano);
 
-          if (ano >= 2023 && ano <= 2100) {
+          if (ano >= 2000 && ano <= 2100) {
             break; // Sai do loop se o ano for válido.
           } else {
             printf("Ano invalido.\n");
@@ -105,55 +103,36 @@ int main() {
             printf("Mês invalido.\n");
           }
         }
-        // até aqui está validado!!
-
-        int diasNoMes[] = {
-            0,  31, 28 + ((ano % 4 == 0 && ano % 100 != 0) || ano % 400 == 0),
-            31, 30, 31,
-            30, 31, 31,
-            30, 31, 30,
-            31};
-        char calendario[6][7]; // Matriz 6x7 para armazenar os números dos dias
-                               // do mês.
-
-        // Preencher o calendário com espaços em branco.
-        for (int i = 0; i < 6; i++) {
-          for (int j = 0; j < 7; j++) {
-            calendario[i][j] = ' ';
-          }
+        // Determine o número de dias no mês
+        int diasNoMes[] = {0,31,28,31,30,31,30,31,31,30,31,30,31};
+        char *nomesDosMeses[] = {"","Janeiro","Fevereiro","Março",
+      "Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro",         "Novembro","Dezembro"};
+    
+        printf("\nCalendario para %s de %d\n", nomesDosMeses[mes],           ano);
+        printf("Dom\tSeg\tTer\tQua\tQui\tSex\tSáb\n");
+    
+        // Encontre o dia da semana para o primeiro dia do mês
+        int primeiroDia = 1;
+        int diaDaSemana = primeiroDia % 7;
+    
+        // Preencha os espaços para o primeiro dia
+        for (int i = 0; i < diaDaSemana; i++) {
+            printf("\t");
         }
-
-        // Preencher o calendário com os números dos dias do mês.
-        int dia = 1;
-        int diaDaSemana = 0; // Começa no domingo.
-
-        for (int i = 0; i < 6; i++) {
-          for (int j = diaDaSemana; j < 7; j++) {
-            if (dia <= diasNoMes[mes]) {
-              calendario[i][j] = dia + '0';
-              dia++;
+        // Imprima os dias do mês
+        for (int dia = 1; dia <= diasNoMes[mes]; dia++) {
+            printf("%2d\t", dia);
+            diaDaSemana++;
+    
+            // Se for o último dia da semana (sábado), vá para a                 próxima linha
+            if (diaDaSemana % 7 == 0) {
+                printf("\n");
             }
-          }
-          diaDaSemana = 0; // Reinicia no domingo após a primeira linha.
-        }
-
-        // Imprimir o cabeçalho do calendário.
-        printf("\nCalendario para %d/%d\n", mes, ano);
-        for (int i = 0; i < 7; i++) {
-          printf("%s ", diasSemana[i]);
         }
         printf("\n");
-
-        // Imprimir o calendário.
-        for (int i = 0; i < 6; i++) {
-          for (int j = 0; j < 7; j++) {
-            printf("%c ", calendario[i][j]);
-          }
-          printf("\n");
-        }
-
         return 0;
         break;
+        
       case 6:
         printf("Saindo...\n");
         exit(0); // Saia do programa
