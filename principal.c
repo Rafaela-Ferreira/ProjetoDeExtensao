@@ -76,6 +76,67 @@ int main() {
       case 4:
         printf("Voc� selecionou Contrato.\n");
         // Coloque a l�gica do contrato aqui
+        // Vari�veis para informa��es do contrato
+        char nomeCliente[100];
+        float valorLocacao;
+        char telefoneCliente[20];
+        char dataEvento[20];
+        int quantidadeDias;
+        int diaSemana;
+        // Exibir a sele��o do contrato
+        // Solicitar informa��es para o contrato
+        printf("\nPREENCHA AS INFORMA��ES NECESS�RIAS PARA IMPRESS�O!\n");
+        printf("\nInforme o nome do cliente: ");
+        scanf("%s", nomeCliente);
+    
+        printf("\nInforme o telefone do cliente (ex:(11)99999-8888): ");
+        scanf(" %s", telefoneCliente);
+    
+        printf("\nInforme a data do evento/locacao (DD/MM/AAAA): ");
+        scanf("%s", dataEvento);
+    
+        printf("\nInforme o dia da semana da loca��o: \nDigite 1: SEG - SEX \nDigite 2: SAB - DOM \n");
+        scanf("%d", &diaSemana);
+        //Verfica��o do dia de semana
+        while(diaSemana != 1 && diaSemana != 2){
+          printf("\nERRO! \nDigite 1 = Para dias entre Segunda e Sexta \nDigite 2 = Para S�bado ou Domingo!");
+          printf("\nInforme o dia de semana: ");
+          scanf("%d", &diaSemana);
+        }
+
+        printf("\nInforme a quantidade de dias de locacao: ");
+        scanf("%d", &quantidadeDias);
+        //Verifica��o da quantidade de dias
+        while(quantidadeDias < 1){
+          printf("\nERRO! O valor digitado � inv�lido!");
+          printf("\nDigite um valor v�lido: ");
+          scanf("%d", &quantidadeDias);
+        }
+
+        //Calculando valor total de loca��o
+        if(diaSemana == 1){
+            valorLocacao = 500 * quantidadeDias;
+        }
+        else if(diaSemana == 2){
+            valorLocacao = 550 * quantidadeDias;
+        }
+        
+        // Imprimir os dados no sistema
+        printf("\n\n\nCONTRATO DE LOCA��O RECANTO DOS SONHOS\n\n");
+        printf("Valor da diaria: Segunda � Sexta: R$500,00 - Sabado � Domingo: R$550,00\n");
+        printf("Telefone: (19) 99580-8156\n");
+        printf("Endereco: Rua dois, N� 1071 - jardim Itagua�u 2, Campinas - SP, CEP 13053-788, Brasil\n\n");
+        printf("Locatario: %s\n", nomeCliente);
+        printf("Quantidade de Dias de Locacao: %d\n", quantidadeDias);
+        printf("Valor total da Locacao: R$%.2f\n", valorLocacao);
+        printf("Telefone do Locatario: %s\n", telefoneCliente);
+        printf("Data do Evento/Locacao: %s\n\n", dataEvento);
+        printf("Assinatura do Locatario: _____\n");
+        printf("Data de hoje: _ /_ /___\n");
+        printf("Campinas, SP\n\n");
+        printf("Assinatura do Locador: _____\n");
+
+        return 0;
         break;
       case 5:
         printf("Voc� selecionou Calendario.\n");
@@ -132,7 +193,7 @@ int main() {
         printf("\n");
         return 0;
         break;
-        
+
       case 6:
         printf("Saindo...\n");
         exit(0); // Saia do programa
