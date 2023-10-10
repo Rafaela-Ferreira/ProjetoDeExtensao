@@ -64,6 +64,8 @@ int main() {
       case 1:
         printf("Voc� selecionou Cadastro de Clientes.\n");
         // Coloque a l�gica do cadastro de clientes aqui
+
+        
         break;
       case 2:
         printf("Voc� selecionou Agenda de Visitas.\n");
