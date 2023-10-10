@@ -107,6 +107,45 @@ int main() {
       case 3:
         printf("Voc� selecionou Agenda de Di�rias.\n");
         // Coloque a l�gica da agenda de di�rias aqui
+        //visualizar os dias disponiveis
+        
+        while (1) {
+          printf("Digite o ano (entre 2023 e 2100): ");
+          scanf("%d", &ano);
+
+          if (ano >= 2023 && ano <= 2100) {
+            break; // Sai do loop se o ano for válido.
+          } else {
+            printf("Ano invalido.\n");
+          }
+        }
+        while (1) {
+          printf("Digite o mes (entre 1 e 12): ");
+          scanf("%d", &mes);
+
+          if (mes >= 1 && mes <= 12) {
+            break; // Sai do loop se o Mês for válido.
+          } else {
+            printf("Mês invalido.\n");
+          }
+        }
+        int dia1, dia2, mes1, mes2, ano1, ano2;
+
+        // Solicite a entrada do usuário para a primeira data
+        printf("Informe a primeira data (dia mes ano): \n");
+        scanf("%d %d %d", &dia1, &mes1, &ano1);
+
+        // Solicite a entrada do usuário para a segunda data
+        printf("Informe a segunda data (dia mes ano): \n");
+        scanf("%d %d %d", &dia2, &mes2, &ano2);
+
+        // Verifique se as datas são iguais
+        if (dia1 == dia2 && mes1 == mes2 && ano1 == ano2) {
+            printf("As datas informadas são iguais.\n");
+        } else {
+            printf("As datas informadas são diferentes.\n");
+        }
+        printf("\n\n");
         break;
       case 4:
         printf("Voc� selecionou Contrato.\n");
