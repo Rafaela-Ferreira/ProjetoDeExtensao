@@ -68,6 +68,37 @@ int main() {
       case 2:
         printf("Voc� selecionou Agenda de Visitas.\n");
         // Coloque a l�gica da agenda de visitas aqui
+        int dia , mes, ano;
+        int hora = 0, min = 0;
+        char opcao;
+
+        printf("\nQue dia você deseja agendar uma visita? ");
+        scanf("%d %d %d", &dia, &mes, &ano);
+        printf("\n%d/%d/%d", dia, mes, ano);
+        printf("\nConfirma essa data? (S/N) ");
+        scanf("%s", &opcao);
+        if (opcao == 'S' || opcao == 's'){
+            printf("Opção válida\n");
+    
+        }else if ((opcao == 'N' || opcao == 'n')){
+            printf("Opção inválida\n");
+            return 0;
+        }
+        printf("\nQue hora você deseja agendar o horário? ");
+        scanf("\n%d", &hora);
+        scanf("\n%d", &min);
+    
+        printf("%d:%d", hora, min);
+        printf("\nConfirma esse horário? (S/N)");
+        scanf("%s", &opcao);
+        if (opcao == 'S' || opcao == 's'){
+            printf("Opção válida\n");
+    
+        }else if ((opcao == 'N' || opcao == 'n')){
+            printf("Opção inválida\n");
+            return 0;
+        }
+
         break;
       case 3:
         printf("Voc� selecionou Agenda de Di�rias.\n");
@@ -120,7 +151,7 @@ int main() {
         else if(diaSemana == 2){
             valorLocacao = 550 * quantidadeDias;
         }
-        
+
         // Imprimir os dados no sistema
         printf("\n\n\nCONTRATO DE LOCA��O RECANTO DOS SONHOS\n\n");
         printf("Valor da diaria: Segunda � Sexta: R$500,00 - Sabado � Domingo: R$550,00\n");
@@ -141,7 +172,7 @@ int main() {
       case 5:
         printf("Voc� selecionou Calendario.\n");
         // Coloque a l�gica do calendario aqui
-        int mes, ano;
+        //int mes, ano;
 
         while (1) {
           printf("Digite o ano (entre 2000 e 2100): ");
