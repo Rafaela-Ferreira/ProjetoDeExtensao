@@ -34,10 +34,7 @@ void calendario() {
   }
   // Determine o número de dias no mês
   int diasNoMes[] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-  char *nomesDosMeses[] = {"",        "Janeiro",  "Fevereiro", "Março",
-                           "Abril",   "Maio",     "Junho",     "Julho",
-                           "Agosto",  "Setembro", "Outubro",   "Novembro",
-                           "Dezembro"};
+  char *nomesDosMeses[] = {"","Janeiro","Fevereiro", "Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"};
 
   printf("\nCalendario para %s de %d\n", nomesDosMeses[mes], ano);
   printf("Dom\tSeg\tTer\tQua\tQui\tSex\tSáb\n");
@@ -62,6 +59,10 @@ void calendario() {
   }
   printf("\n");
   // return;
+}
+//função cadastro de chacaras
+void cadastroChacaras(){
+  
 }
 
 // Fun��o para verificar o login
@@ -169,8 +170,10 @@ int main() {
 
         char *nomeDasChacaras[] = {"RECANTO DOS SONHOS: ", "CHACARA GABI: "};
 
-        char *chacarasDisponiveis[2][11] = {{"250m² |", "Estacionamento para até 10 carros |", "Contem Churrasqueira | ", "", "","", "", "", "", "", ""},
-{"150m² | ", "Estacionamento para até 5 carros | ", "Sem Churrasqueira |", "", "","", "", "", "", "", ""}};
+        char *chacarasDisponiveis[2][11] = {
+          {"250m² |", "Estacionamento para até 10 carros|","Contem Churrasqueira|","Freezer|","2 fogões|","Wi-fi|","3 Quartos|","Geladeira|","Limpeza inclusa|","",""},
+          {"150m²|","Estacionamento para até 5 carros|","Sem Churrasqueira|","1 fogão|","0 Freezer|","Sem wi-fi|","1 Quarto|","Geladeira|","Limpeza não inclusa","",""}
+        };
 
         for (int i = 0; i < 2; i++) { // Ajustado para iterar apenas 2 vezes
           printf("\n%s", nomeDasChacaras[i]);
@@ -267,10 +270,7 @@ int main() {
         // 4.3 verificar se o ano � bissexto ou n�o
         for (int anoBissexto = 2024; anoBissexto <= anoEvento;
              anoBissexto += 4) {
-          maxDiasFevereiro = (anoBissexto % 4 == 0 && (anoBissexto % 100 != 0 ||
-                                                       anoBissexto % 400 == 0))
-                                 ? 29
-                                 : 28;
+          maxDiasFevereiro = (anoBissexto % 4 == 0 && (anoBissexto % 100 != 0 ||anoBissexto % 400 == 0))? 29: 28;
         }
 
         if (mesEvento == 2) {
