@@ -22,7 +22,6 @@ void calendario() {
     scanf("%d", &mes);
 
     if (mes >= 1 && mes <= 12) {
-      printf("Mes invalido.\n");
       break; // Sai do loop se o Mês for válido.
     } else {
       printf("Mês invalido.\n");
@@ -58,7 +57,20 @@ void calendario() {
 }
 //função cadastro de chacaras
 void cadastroChacaras(){
-  
+  char *nomeDasChacaras[] = {"RECANTO DOS SONHOS: ", "CHACARA GABI: "};
+
+  char *chacarasDisponiveis[2][11] = {
+    {"250m² |", "Estacionamento para até 10 carros|","Contem Churrasqueira|","Freezer|","2 fogões|","Wi-fi|","3 Quartos|","Geladeira|","Limpeza inclusa|","",""},
+    {"150m²|","Estacionamento para até 5 carros|","Sem Churrasqueira|","1 fogão|","0 Freezer|","Sem wi-fi|","1 Quarto|","Geladeira|","Limpeza não inclusa","",""}
+  };
+
+  for (int i = 0; i < 2; i++) { // Ajustado para iterar apenas 2 vezes
+    printf("\n%s", nomeDasChacaras[i]);
+    for (int j = 0; j < 11; j++) {
+      printf("%s ", chacarasDisponiveis[i][j]);
+    }
+    printf("\n");
+  }
 }
 // Definindo a estrutura para armazenar informa��es do usu�rio
 struct Usuario {
@@ -161,28 +173,22 @@ int main() {
       case 3:
         printf("Voc� selecionou Agenda de Di�rias.\n");
         // Coloque a l�gica da agenda de di�rias aqui
+        printf("\nESCOLHA O ANO E O MES QUE DESEJA VISUALIZAR\n");
         // visualizar os dias disponiveis
         calendario();
         printf("\n\n");
-
-        printf("ESCOLHA UMA CHACARA!!");
-        printf("\n\n");
-
-        char *nomeDasChacaras[] = {"RECANTO DOS SONHOS: ", "CHACARA GABI: "};
-
-        char *chacarasDisponiveis[2][11] = {
-          {"250m² |", "Estacionamento para até 10 carros|","Contem Churrasqueira|","Freezer|","2 fogões|","Wi-fi|","3 Quartos|","Geladeira|","Limpeza inclusa|","",""},
-          {"150m²|","Estacionamento para até 5 carros|","Sem Churrasqueira|","1 fogão|","0 Freezer|","Sem wi-fi|","1 Quarto|","Geladeira|","Limpeza não inclusa","",""}
-        };
-
-        for (int i = 0; i < 2; i++) { // Ajustado para iterar apenas 2 vezes
-          printf("\n%s", nomeDasChacaras[i]);
-          for (int j = 0; j < 11; j++) {
-            printf("%s ", chacarasDisponiveis[i][j]);
-          }
-          printf("\n");
-        }
-
+        char resposta;
+        do{
+          printf("Deseja agendar um dia? [s/n]");
+          scanf(" %c", &resposta);
+          if (resposta != 's' && resposta != 'S') printf("Opcão invalida\n");
+          
+        }while(resposta != 's' && resposta != 'S');
+        
+        printf("\nESCOLHA UMA CHACARA!!");
+        printf("\n\nCHACARAS DISPONIVEIS NA REGIÃO!\n");
+        cadastroChacaras();
+        
         printf("\n\n");
         break;
       case 4:
