@@ -360,10 +360,7 @@ int main() {
 
         // 6. DIAS DA LOCA��O
         for (i = 1; i <= quantidadeDias; i++) {
-          printf("\nInforme o %d� dia da semana da loca��o \n1 - Segunda \n2 - "
-                 "Ter�a \n3 - Quarta \n4 - Quinta \n5 - Sexta \n6 - S�bado \n7 "
-                 "- Domingo: ",
-                 i);
+          printf("\nInforme o %d� dia da semana da loca��o \n1 - Segunda \n2 - " "Ter�a \n3 - Quarta \n4 - Quinta \n5 - Sexta \n6 - S�bado \n7 ""- Domingo: ",i);
           scanf("%d", &diaSemana[i - 1]);
         }
 
