@@ -4,57 +4,67 @@
 #include <string.h>
 
 
-// função calendario
+// Função para calcular o dia da semana para uma data específica
+int calcularDiaSemana(int ano, int mes, int dia) {
+    if (mes < 3) {
+        mes += 12;
+        ano--;
+    }
+    int K = ano % 100;
+    int J = ano / 100;
+    int diaDaSemana = (dia + 13 * (mes + 1) / 5 + K + K / 4 + J / 4 + 5 * J) % 7;
+    return diaDaSemana;
+}
+
 void calendario() {
-  int ano, mes;
-  while (1) {
-    printf("Digite o ano (entre 2000 e 2100): ");
-    scanf("%d", &ano);
+    int ano, mes, dia_escolhido;
+    while (1) {
+        printf("Digite o ano (entre 2000 e 2100): ");
+        scanf("%d", &ano);
 
-    if (ano >= 2000 && ano <= 2100) {
-      break; // Sai do loop se o ano for válido.
-    } else {
-      printf("Ano invalido.\n");
+        if (ano >= 2000 && ano <= 2100) {
+            break; // Sai do loop se o ano for válido.
+        } else {
+            printf("Ano invalido.\n");
+        }
     }
-  }
-  while (1) {
-    printf("Digite o mes (entre 1 e 12): ");
-    scanf("%d", &mes);
+    while (1) {
+        printf("Digite o mes (entre 1 e 12): ");
+        scanf("%d", &mes);
 
-    if (mes >= 1 && mes <= 12) {
-      printf("Mes invalido.\n");
-      break; // Sai do loop se o Mês for válido.
-    } else {
-      printf("Mês invalido.\n");
+        if (mes >= 1 && mes <= 12) {
+            break; // Sai do loop se o Mês for válido.
+        } else {
+            printf("Mês invalido.\n");
+        }
     }
-  }
-  // Determine o número de dias no mês
-  int diasNoMes[] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-  char *nomesDosMeses[] = {"","Janeiro","Fevereiro", "Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"};
 
-  printf("\nCalendario para %s de %d\n", nomesDosMeses[mes], ano);
-  printf("Dom\tSeg\tTer\tQua\tQui\tSex\tSáb\n");
+    int diasNoMes[] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    char *nomesDosMeses[] = {"", "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"};
 
-  // Encontre o dia da semana para o primeiro dia do mês
-  int primeiroDia = 1;
-  int diaDaSemana = primeiroDia % 7;
+    printf("\nCalendario para %s de %d\n", nomesDosMeses[mes], ano);
+    printf("Dom\tSeg\tTer\tQua\tQui\tSex\tSáb\n");
 
-  // Preencha os espaços para o primeiro dia
-  for (int i = 0; i < diaDaSemana; i++) {
-    printf("\t");
-  }
-  // Imprima os dias do mês
-  for (int dia = 1; dia <= diasNoMes[mes]; dia++) {
-    printf("%2d\t", dia);
-    diaDaSemana++;
+    int primeiroDiaDoMes = calcularDiaSemana(ano, mes, 1);
+    primeiroDiaDoMes = (primeiroDiaDoMes + 6) % 7; // Ajuste para o início da semana em 0 ao invés de 1
 
-    // Se for o último dia da semana (sábado), vá para a próxima linha
-    if (diaDaSemana % 7 == 0) {
-      printf("\n");
+    for (int i = 0; i < primeiroDiaDoMes; i++) {
+        printf("\t");
     }
-  }
-  printf("\n");
-  // return;
+
+    for (int dia = 1; dia <= diasNoMes[mes]; dia++) {
+        if (dia == dia_escolhido) {
+            printf("\033[1;31m%2d\033[0m\t", dia); // Imprime o dia escolhido em vermelho
+        } else {
+            printf("%2d\t", dia);
+        }
+        primeiroDiaDoMes++;
+
+        if (primeiroDiaDoMes % 7 == 0) {
+            printf("\n");
+        }
+    }
+    printf("\n");
 }
 //função cadastro de chacaras
 void cadastroChacaras(){
