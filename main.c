@@ -5,65 +5,83 @@
 
 // Função para calcular o dia da semana para uma data específica
 int calcularDiaSemana(int ano, int mes, int dia) {
-  if (mes < 3) {
-    mes += 12;
-    ano--;
-  }
-  int K = ano % 100;
-  int J = ano / 100;
-  int diaDaSemana = (dia + 13 * (mes + 1) / 5 + K + K / 4 + J / 4 + 5 * J) % 7;
-  return diaDaSemana;
+    if (mes < 3) {
+        mes += 12;
+        ano--;
+    }
+    int K = ano % 100;
+    int J = ano / 100;
+    int diaDaSemana = (dia + 13 * (mes + 1) / 5 + K + K / 4 + J / 4 + 5 * J) % 7;
+    return diaDaSemana;
 }
 
 void calendario() {
-  int ano, mes, dia_escolhido;
-  while (1) {
-    printf("Digite o ano (entre 2000 e 2100): ");
-    scanf("%d", &ano);
+    int ano, mes;
+    while (1) {
+        printf("Digite o ano (entre 2000 e 2100): ");
+        scanf("%d", &ano);
 
-    if (ano >= 2000 && ano <= 2100) {
-      break; // Sai do loop se o ano for válido.
-    } else {
-      printf("Ano invalido.\n");
+        if (ano >= 2000 && ano <= 2100) {
+            break; // Sai do loop se o ano for válido.
+        } else {
+            printf("Ano inválido.\n");
+        }
     }
-  }
-  while (1) {
-    printf("Digite o mes (entre 1 e 12): ");
-    scanf("%d", &mes);
+    while (1) {
+        printf("Digite o mês (entre 1 e 12): ");
+        scanf("%d", &mes);
 
-    if (mes >= 1 && mes <= 12) {
-      break; // Sai do loop se o Mês for válido.
-    } else {
-      printf("Mês invalido.\n");
+        if (mes >= 1 && mes <= 12) {
+            break; // Sai do loop se o Mês for válido.
+        } else {
+            printf("Mês inválido.\n");
+        }
     }
-  }
-  int diasNoMes[] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-  char *nomesDosMeses[] = {"","Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"};
+    int diasNoMes[] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    char *nomesDosMeses[] = {"", "Janeiro", "Fevereiro", "Março",
+                             "Abril", "Maio", "Junho", "Julho",
+                             "Agosto", "Setembro", "Outubro", "Novembro",
+                             "Dezembro"};
 
-  printf("\nCalendario para %s de %d\n", nomesDosMeses[mes], ano);
-  printf("Dom\tSeg\tTer\tQua\tQui\tSex\tSáb\n");
+    printf("\nCalendário para %s de %d\n", nomesDosMeses[mes], ano);
+    printf("Dom\tSeg\tTer\tQua\tQui\tSex\tSáb\n");
 
-  int primeiroDiaDoMes = calcularDiaSemana(ano, mes, 1);
-  primeiroDiaDoMes = (primeiroDiaDoMes + 6) % 7; // Ajuste para o início da semana em 0 ao invés de 1
+    int primeiroDiaDoMes = calcularDiaSemana(ano, mes, 1);
+    primeiroDiaDoMes = (primeiroDiaDoMes + 6) %
+                       7; // Ajuste para o início da semana em 0 ao invés de 1
 
-  for (int i = 0; i < primeiroDiaDoMes; i++) {
-    printf("\t");
-  }
-
-  for (int dia = 1; dia <= diasNoMes[mes]; dia++) {
-    if (dia == dia_escolhido) {
-      printf("\033[1;31m%2d\033[0m\t",dia); // Imprime o dia escolhido em vermelho
-    } else {
-      printf("%2d\t", dia);
+    for (int i = 0; i < primeiroDiaDoMes; i++) {
+        printf("\t");
     }
-    primeiroDiaDoMes++;
 
-    if (primeiroDiaDoMes % 7 == 0) {
-      printf("\n");
+    // Gerar 3 dias aleatórios
+    int diasRealcados[5];
+    for (int i = 0; i < 5; i++) {
+        diasRealcados[i] = rand() % diasNoMes[mes] + 1;
     }
-  }
+
+    for (int dia = 1; dia <= diasNoMes[mes]; dia++) {
+        int realcado = 0;
+        for (int i = 0; i < 5; i++) {
+            if (dia == diasRealcados[i]) {
+                realcado = 1;
+                break;
+            }
+        }
+        if (realcado) {
+            printf("\033[1;31m%2d\033[0m\t", dia); // Imprime o dia realçado em vermelho
+        } else {
+            printf("%2d\t", dia);
+        }
+        primeiroDiaDoMes++;
+
+        if (primeiroDiaDoMes % 7 == 0) {
+            printf("\n");
+        }
+    }
   printf("\n");
 }
+
 
 // função cadastro de chácaras
 // Estrutura para armazenar os detalhes das chácaras
@@ -199,6 +217,7 @@ int main() {
       case 3:
         printf("Voc� selecionou Agenda de Visitas.\n");
         // Coloque a l�gica da agenda de visitas aqui
+        calendario();
         int dia, mes, ano;
         int hora = 0, min = 0;
         char opcao;
@@ -322,17 +341,14 @@ int main() {
 
         // 4.2 Verifica��o dia da loca��o (M�s com 28 ou 29 dias)
         // 4.3 verificar se o ano � bissexto ou n�o
-        for (int anoBissexto = 2024; anoBissexto <= anoEvento; anoBissexto += 4) {
-          maxDiasFevereiro = (anoBissexto % 4 == 0 && (anoBissexto % 100 != 0 || anoBissexto % 400 == 0)) ? 29 : 28;
+        for (int anoBissexto = 2024; anoBissexto <= anoEvento;anoBissexto += 4) {
+          maxDiasFevereiro = (anoBissexto % 4 == 0 && (anoBissexto % 100 != 0 ||anoBissexto % 400 == 0))? 29 : 28;
         }
 
         if (mesEvento == 2) {
           while (diaEvento < 1 || diaEvento > maxDiasFevereiro) {
-            printf("\nERRO! Dia do evento digitado inv�lido para fevereiro em "
-                   "um ano %s bissexto!\n",
-                   (maxDiasFevereiro == 29) ? "�" : "n�o �");
-            printf("Digite novamente o dia do evento (1 - %d): ",
-                   maxDiasFevereiro);
+            printf("\nERRO! Dia do evento digitado inv�lido para fevereiro em ""um ano %s bissexto!\n",(maxDiasFevereiro == 29) ? "�" : "n�o �");
+            printf("Digite novamente o dia do evento (1 - %d): ", maxDiasFevereiro);
             scanf("%d", &diaEvento);
           }
         }
@@ -352,15 +368,17 @@ int main() {
 
         // 5.1 Verifica��o da quantidade de dias
         while (quantidadeDias < 1 || quantidadeDias > 31) {
-          printf("\nERRO! O valor digitado � inv�lido ou excede o limite "
-                 "m�ximo de 31 dias!");
+          printf("\nERRO! O valor digitado � inv�lido ou excede o limite " "m�ximo de 31 dias!");
           printf("\nDigite a quantidade de dias novamente: ");
           scanf("%d", &quantidadeDias);
         }
 
         // 6. DIAS DA LOCA��O
         for (i = 1; i <= quantidadeDias; i++) {
-          printf("\nInforme o %d� dia da semana da loca��o \n1 - Segunda \n2 - " "Ter�a \n3 - Quarta \n4 - Quinta \n5 - Sexta \n6 - S�bado \n7 ""- Domingo: ",i);
+          printf("\nInforme o %d� dia da semana da loca��o \n1 - Segunda \n2 - "
+                 "Ter�a \n3 - Quarta \n4 - Quinta \n5 - Sexta \n6 - S�bado \n7 "
+                 "- Domingo: ",
+                 i);
           scanf("%d", &diaSemana[i - 1]);
         }
 
@@ -379,7 +397,9 @@ int main() {
             valorLocacao += 550.0;
             break;
           default:
-            printf("\nERRO! Dia da semana inv�lido! O dia %d n�o ser� " "considerado.\n", diaSemana[i]);
+            printf("\nERRO! Dia da semana inv�lido! O dia %d n�o ser� "
+                   "considerado.\n",
+                   diaSemana[i]);
             break;
           }
         }
@@ -387,9 +407,9 @@ int main() {
         // IMPRIMIR DADOS NA TELA DO SISTEMA (obs: impress�o final ser� feita em
         // txt)
         printf("\n\n\nCONTRATO DE LOCA��O RECANTO DOS SONHOS\n\n");
-        printf("Valor da diaria: Segunda � Sexta: R$500,00 - Sabado � Domingo: " "R$550,00\n");
+        printf("Valor da diaria: Segunda � Sexta: R$500,00 - Sabado � Domingo: ""R$550,00\n");
         printf("Telefone: (19) 99580-8156\n");
-        printf("Endereco: Rua dois, N� 1071 - jardim Itagua�u 2, Campinas - " "SP, CEP 13053-788, Brasil\n\n");
+        printf("Endereco: Rua dois, N� 1071 - jardim Itagua�u 2, Campinas - ""SP, CEP 13053-788, Brasil\n\n");
         printf("Locatario: %s\n", nomeCliente);
         printf("Quantidade de Dias de Locacao: %d\n", quantidadeDias);
         printf("Valor total da Loca��o: R$%.2f\n", valorLocacao);
@@ -399,7 +419,6 @@ int main() {
         printf("Data de hoje: __ /__ /_____\n");
         printf("Campinas, SP\n\n");
         printf("Assinatura do Locador: ____________\n");
-
         break;
       case 6:
         printf("Voc� selecionou Calendario.\n");
