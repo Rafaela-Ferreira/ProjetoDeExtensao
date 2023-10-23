@@ -117,7 +117,7 @@ void destacarDiasSelecionados(int mes, int ano, int diasAgendados[], int numDias
     printf("\nCalendário para %s de %d\n", nomesDosMeses[mes], ano);
     printf("Dom\tSeg\tTer\tQua\tQui\tSex\tSáb\n");
 
-    int primeiroDiaDoMes = (calcularDiaSemana(ano, mes, 1) + 6) % 7;
+    int primeiroDiaDoMes = calcularDiaSemana(ano, mes, 1);
 
     for (int i = 0; i < primeiroDiaDoMes; i++) {
         printf("\t");
@@ -133,13 +133,15 @@ void destacarDiasSelecionados(int mes, int ano, int diasAgendados[], int numDias
         }
         int diaDaSemana = calcularDiaSemana(ano, mes, dia);
 
-        if (diaDaSemana == 0 || diaDaSemana == 6) {
-            printf("\033[1;90m%2d\033[0m\t"); // Imprime domingo e sábado em cinza
-        } else if (agendado) {
-            printf("\033[1;34m%2d\033[0m\t"); // Imprime o dia agendado em azul
-        } else {
-            printf("%2d\t");
-        }
+      if (diaDaSemana == 0) {
+          printf("\033[1;91m%2d\033[0m\t", dia); // Imprime domingo em vermelho
+      } else if (diaDaSemana == 6) {
+          printf("\033[0;90m%2d\033[0m\t", dia); // Imprime sábado em cinza
+      } else if (agendado) {
+          printf("\033[1;34m%2d\033[0m\t", dia); // Imprime o dia agendado em azul
+      } else {
+          printf("%2d\t", dia);
+      }
 
         if ((primeiroDiaDoMes + dia) % 7 == 0 || dia == diasNoMes[mes]) {
             printf("\n");
@@ -147,7 +149,14 @@ void destacarDiasSelecionados(int mes, int ano, int diasAgendados[], int numDias
     }
     printf("\n");
 }
-
+// Função para verificar se o ano inserido é válido
+int verificarAno(int ano) {
+    if (ano < 2023 || ano > 2100) {
+        printf("Ano inválido. Por favor, insira um ano entre 2023 e 2100.\n");
+        return 0;
+    }
+    return 1;
+}
 // Função para solicitar ao usuário os dias a serem agendados e destacá-los no calendário
 void agendarNoCalendario() {
     time_t now;
@@ -160,12 +169,10 @@ void agendarNoCalendario() {
     int mes, dia, ano;
 
     while (1) {
-        printf("Digite o ano (entre %d e 2100): ", ano_atual);
+        printf("Digite o ano (entre 2023 e 2100): ");
         scanf("%d", &ano);
-
-        if (ano < ano_atual || ano > 2100) {
-            printf("Ano inválido.\n");
-        } else {
+  
+        if (verificarAno(ano)) {
             break;
         }
     }
