@@ -3,6 +3,94 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+//Função para fazer o cadastro de clientes
+// Definição da estrutura para o contrato de locação
+typedef struct
+{
+char cliente_nome[100];
+char tel[20];
+char endereco_chacara[100];
+int numero_contrato;
+char data_contrato[20];
+float valor_locacao;
+int taxa_limpeza;
+float taxa_quebra;
+char assinatura[100];
+} Contrato;
+void criarContrato(Contrato* contrato)
+{
+setlocale(LC_ALL, "Portuguese");
+setbuf(stdin, NULL);
+printf("Nome do cliente: ");
+fgets(contrato->cliente_nome, sizeof(contrato->cliente_nome), stdin);
+strtok(contrato->cliente_nome, "\n");
+printf("Telefone: ");
+scanf("%19s[^\n]", &contrato->tel);
+getchar(); // Captura o caractere de nova linha
+setbuf(stdin, NULL);
+printf("Endereço da chácara: ");
+fgets(contrato->endereco_chacara, sizeof(contrato->endereco_chacara), stdin);
+strtok(contrato->endereco_chacara, "\n");
+setbuf(stdin, NULL);
+printf("Número do contrato: ");
+scanf("%d", &contrato->numero_contrato);
+getchar(); // Captura o caractere de nova linha
+setbuf(stdin, NULL);
+printf("Data do contrato: ");
+fgets(contrato->data_contrato, sizeof(contrato->data_contrato), stdin);
+strtok(contrato->data_contrato, "\n");
+setbuf(stdin, NULL);
+printf("Valor da locação: ");
+scanf("%f", &contrato->valor_locacao);
+
+getchar();
+setbuf(stdin, NULL);
+printf("Deseja incluir a taxa de limpeza (R$200,00)? (1-Sim / 0-Não): ");
+scanf("%d", &contrato->taxa_limpeza);
+setbuf(stdin, NULL);
+if (contrato->taxa_limpeza)
+{
+contrato->valor_locacao += 200.0;
+}
+printf("Valor da taxa de quebra (R$150,00 - R$350,00): ");
+scanf("%f", &contrato->taxa_quebra);
+setbuf(stdin, NULL);
+printf("\n ");
+printf("\t\tAssinatura Eletrônica: ");
+fgets(contrato->assinatura, sizeof(contrato->assinatura), stdin);
+strtok(contrato->assinatura,"\n");
+printf("\t---------------------------------------------------------------------");
+setbuf(stdin, NULL);
+}
+void salvarContrato(Contrato* contrato)
+{
+setlocale(LC_ALL, "Portuguese_Brasil");
+FILE *arquivo = fopen("contrato_chacara.doc", "w");
+if (arquivo == NULL)
+{
+printf("Erro ao abrir o arquivo!\n");
+return;
+}
+fprintf(arquivo, "\t\t\t\t\tRECANTO DOS SONHOS\n");
+fprintf(arquivo, "<------------------------------------------------------------------------------>\n");
+fprintf(arquivo, "\n");
+fprintf(arquivo, "Contrato de Locação de Chácara\n");
+fprintf(arquivo, "Cliente: %s\n", contrato->cliente_nome);
+fprintf(arquivo, "Telefone: %s\n", contrato->tel);
+fprintf(arquivo, "Endereço da Chácara: %s\n", contrato->endereco_chacara);
+fprintf(arquivo, "Número do Contrato: %d\n", contrato->numero_contrato);
+fprintf(arquivo, "Data do Contrato: %s\n", contrato->data_contrato);
+fprintf(arquivo, "Valor da Locação: R$%.2f\n", contrato->valor_locacao);
+if (contrato->taxa_limpeza)
+{
+fprintf(arquivo, "Taxa de Limpeza Incluída: R$200,00\n");
+}
+fprintf(arquivo, "Taxa de Quebra: R$%.2f\n", contrato->taxa_quebra);
+fprintf(arquivo, "\t\tassinatura: %s\n", contrato->assinatura);
+fprintf(arquivo, "------------------------------------------------------\n");
+fclose(arquivo);
+printf("\n\nContrato gerado com sucesso e salvo em 'contrato_chacara.doc'.\n");
+}
 
 // Função para calcular o dia da semana para uma data específica
 int calcularDiaSemana(int ano, int mes, int dia) {
@@ -332,6 +420,13 @@ int main() {
       case 1:
         printf("Voc� selecionou Cadastro de Clientes.\n");
         // Coloque a l�gica do cadastro de clientes aqui
+        printf("\n--------------------------------");
+        printf("RECANTOS DOS SONHOS");
+        printf("-------------------------------------------\n");
+        Contrato contrato;
+        criarContrato(&contrato);
+        salvarContrato(&contrato);
+        
         break;
       case 2:
         printf("Voc� selecionou Cadastro de Chácaras.\n");
