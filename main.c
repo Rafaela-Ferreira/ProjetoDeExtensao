@@ -446,35 +446,73 @@ int main() {
         // Coloque a l�gica da agenda de visitas aqui
         printf(
             "Escolha o mês e o ano, para visualizar as datas disponíves\n\n");
+        //função calendario, para visualizar os dias disponiveis
         calendario();
-        int dia, mes, ano;
-        int hora = 0, min = 0;
-        char opcao;
+        printf("Você selecionou Agenda de Visitas.\n");
+                // Coloque a l gica da agenda de visitas aqui
+                int dia , mes, ano, formula, dia_semana;
+                int hora , min;
+                char opcao;
 
-        printf("\nQue dia você deseja agendar uma visita? ");
-        scanf("%d %d %d", &dia, &mes, &ano);
-        printf("\n%d/%d/%d", dia, mes, ano);
-        printf("\nConfirma essa data? (S/N) ");
-        scanf("%s", &opcao);
-        if (opcao == 'S' || opcao == 's') {
-          printf("Opção válida\n");
+                printf("\n-----Digite a data que deseja agendar a visita (DD/MM/AAAA)------- ");
+                printf("\nDigite o ano: ");
+                scanf("%d", &ano);
+                printf("\nDigite o mês: ");
+                scanf("%d", &mes);
+                printf("\nDigite o dia: ");
+                scanf("%d", &dia);
 
-        } else if ((opcao == 'N' || opcao == 'n')) {
-          printf("Opção inválida\n");
+                formula = dia + 2*mes + (3*(mes+1)/5) + ano + ano/4 - ano/100 + ano/400 + 2;
+                dia_semana = formula % 7;
+
+                printf("\n-----%d/%d/%d-----", dia, mes, ano);
+
+                if(dia_semana == 0){
+                    printf("\nEsse data é um Sábado");
+                }
+
+                else if(dia_semana == 1){
+                    printf("\nEsse data é um Domingo");
+                }
+
+                else if(dia_semana == 2){
+                    printf("\nEsse data é uma Segunda - feira\n");
+                }
+
+                else if(dia_semana == 3){
+                    printf("\nEsse data é uma Terça - feira\n");
+                }
+
+                else if(dia_semana == 4){
+                    printf("\nEsse data é uma Quarta - feira\n");
+                }
+
+                else if(dia_semana == 5){
+                    printf("\nEsse data é uma Quinta - feira\n");
+                }
+
+                else if(dia_semana == 6){
+                    printf("\nEsse data é uma Sexta - feira\n");
+                }
+
+                printf("\n-----Digite o horário que deseja agendar a visita (H:Min)------- ");
+                printf("\nDigite a hora: ");
+                scanf("\n%d", &hora);
+                printf("\nDigite o minuto: ");
+                scanf("\n%d", &min);
+                printf("\n------%.2d:%.2d-----", hora, min);
+
+                if(hora < 10 || hora > 18){
+
+                    printf("\nHorário inválido\n");
+                }
+
+                printf("\nConfirma essa data e horário? (S/N)");
+                scanf("%s", &opcao);
+                if (opcao == 'S' || opcao == 's'){
+                    printf("\nAgendamento finalizado!\n");
         }
-        printf("\nQue hora você deseja agendar o horário? ");
-        scanf("\n%d", &hora);
-        scanf("\n%d", &min);
 
-        printf("%d:%d", hora, min);
-        printf("\nConfirma esse horário? (S/N)");
-        scanf("%s", &opcao);
-        if (opcao == 'S' || opcao == 's') {
-          printf("Opção válida\n");
-
-        } else if ((opcao == 'N' || opcao == 'n')) {
-          printf("Opção inválida\n");
-        }
 
         break;
       case 4:
