@@ -171,7 +171,7 @@ void agendarNoCalendario() {
     while (1) {
         printf("Digite o ano (entre 2023 e 2100): ");
         scanf("%d", &ano);
-  
+
         if (verificarAno(ano)) {
             break;
         }
@@ -301,17 +301,19 @@ typedef struct {
 
 // Função para imprimir os detalhes de cada chácara
 void imprimirDetalhesChacara(Chacara chacara) {
-  printf("Nome da Chácara: %s\n", chacara.nome);
+  printf("Nome da Chácara: \033[0;31m%s\033[0m\n", chacara.nome);
   printf("Detalhes:\n");
   for (int i = 0; i < 11; i++) {
-    printf("- %s\n", chacara.detalhes[i]);
+    if (strcmp(chacara.detalhes[i], "") != 0) {
+      printf("- %s\n", chacara.detalhes[i]);
+    }
   }
   printf("\n");
 }
 
 // Função de cadastro e exibição de chácaras
 void cadastroChacaras() {
-  Chacara chacarasDisponiveis[3] = {
+  Chacara chacarasDisponiveis[10] = {
       {"RECANTO DOS SONHOS",
        {"250m²", "Estacionamento para até 10 carros", "Contém Churrasqueira",
         "Freezer", "2 fogões", "Wi-fi", "3 Quartos", "Geladeira",
@@ -330,8 +332,7 @@ void cadastroChacaras() {
   int numChacaras = 3;
 
   while (1) {
-    printf("Deseja cadastrar uma nova chácara pressione [S]\nDeseja somente "
-           "visualizar pressione [N]: ");
+    printf("Deseja cadastrar uma nova chácara? Pressione [S] para sim ou [N] para não: ");
     char resposta;
     scanf(" %c", &resposta);
 
@@ -433,7 +434,7 @@ int main() {
         Contrato contrato;
         criarContrato(&contrato);
         salvarContrato(&contrato);
-        
+
         break;
       case 2:
         printf("Voc� selecionou Cadastro de Chácaras.\n");
