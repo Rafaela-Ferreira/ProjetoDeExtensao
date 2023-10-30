@@ -293,77 +293,31 @@ void calendario() {
 
 
 // função cadastro de chácaras
-// Estrutura para armazenar os detalhes das chácaras
+#define MAX_CARACTERISTICAS 9
+#define MAX_NOME 50
+
 typedef struct {
-  char nome[50];
-  char detalhes[11][50];
+    char nome[MAX_NOME];
+    char caracteristicas[MAX_CARACTERISTICAS][100];
 } Chacara;
 
-// Função para imprimir os detalhes de cada chácara
-void imprimirDetalhesChacara(Chacara chacara) {
-  printf("Nome da Chácara: \033[0;31m%s\033[0m\n", chacara.nome);
-  printf("Detalhes:\n");
-  for (int i = 0; i < 11; i++) {
-    if (strcmp(chacara.detalhes[i], "") != 0) {
-      printf("- %s\n", chacara.detalhes[i]);
+void preencherChacara(Chacara *chacara, const char *nome, const char *caracteristicas[MAX_CARACTERISTICAS]) {
+    snprintf(chacara->nome, MAX_NOME, "%s", nome);
+    for (int i = 0; i < MAX_CARACTERISTICAS; i++) {
+        snprintf(chacara->caracteristicas[i], 100, "%s", caracteristicas[i]);
     }
-  }
-  printf("\n");
 }
 
-// Função de cadastro e exibição de chácaras
-void cadastroChacaras() {
-  Chacara chacarasDisponiveis[10] = {
-      {"RECANTO DOS SONHOS",
-       {"250m²", "Estacionamento para até 10 carros", "Contém Churrasqueira",
-        "Freezer", "2 fogões", "Wi-fi", "3 Quartos", "Geladeira",
-        "Limpeza inclusa", "", ""}},
-      {"CHÁCARA GABI",
-       {"150m²", "Estacionamento para até 5 carros", "Sem Churrasqueira",
-        "1 fogão", "Sem Freezer", "Sem Wi-fi", "1 Quarto", "Geladeira",
-        "Limpeza não inclusa", "", ""}},
-      {"OS CARACÓIS",
-       {"200m²", "Estacionamento para até 8 carros", "Contém Churrasqueira",
-        "Freezer", "2 fogões", "Wi-fi", "2 Quartos", "Geladeira",
-        "Limpeza inclusa", "", ""}}};
-
-  printf("********* Bem-vindo ao Cadastro de Chácaras *********\n\n");
-
-  int numChacaras = 3;
-
-  while (1) {
-    printf("Deseja cadastrar uma nova chácara? Pressione [S] para sim ou [N] para não: ");
-    char resposta;
-    scanf(" %c", &resposta);
-
-    if (resposta == 'S' || resposta == 's') {
-      if (numChacaras < 10) {
-        Chacara novaChacara;
-        printf("Digite o nome da chácara: ");
-        scanf("%s", novaChacara.nome);
-
-        printf("Digite os detalhes da chácara:\n");
-        for (int i = 0; i < 11; i++) {
-          printf("Detalhe %d: ", i + 1);
-          scanf("%s", novaChacara.detalhes[i]);
-        }
-
-        chacarasDisponiveis[numChacaras] = novaChacara;
-        numChacaras++;
-      } else {
-        printf("Limite máximo de chácaras atingido.\n");
-      }
-    } else {
-      break;
+void exibirChacara(Chacara chacara) {
+    printf("Nome: %s\n", chacara.nome);
+    printf("Características:\n");
+    for (int i = 0; i < MAX_CARACTERISTICAS; i++) {
+        printf("%s\n", chacara.caracteristicas[i]);
     }
-  }
-
-  printf("********* Chácaras Cadastradas *********\n\n");
-
-  for (int i = 0; i < numChacaras; i++) {
-    imprimirDetalhesChacara(chacarasDisponiveis[i]);
-  }
+    printf("\n");
 }
+
+
 
 // Definindo a estrutura para armazenar informa��es do usu�rio
 struct Usuario {
@@ -398,6 +352,9 @@ int main() {
 
   int opcao;
   int usuarioLogado = -1;
+  
+  
+  
 
   while (1) { // Loop principal
     if (usuarioLogado == -1) {
@@ -416,12 +373,13 @@ int main() {
       printf("\n*** Menu Principal ***\n");
       printf("1. Cadastro de Clientes\n");
       printf("2. Cadastro de Chácaras\n");
-      printf("3. Agendar Visitas\n");
-      printf("4. Agendar Di�rias\n");
-      printf("5. Contrato\n");
-      printf("6. Calendario\n");
-      printf("7. Sair\n");
-      printf("Escolha uma op��o: ");
+      printf("3. Visualizar Chácaras Disponíveis\n"); 
+      printf("4. Agendar Visitas\n");
+      printf("5. Agendar Diárias\n");
+      printf("6. Contrato\n");
+      printf("7. Calendário\n");
+      printf("8. Sair\n");
+      printf("Escolha uma opção: ");
       scanf("%d", &opcao);
 
       switch (opcao) {
@@ -439,89 +397,108 @@ int main() {
       case 2:
         printf("Voc� selecionou Cadastro de Chácaras.\n");
         // Coloque a l�gica do Cadastro de Chácaras
-        cadastroChacaras();
-        break;
-      case 3:
-        printf("Voc� selecionou Agenda de Visitas.\n");
-        // Coloque a l�gica da agenda de visitas aqui
-        printf(
-            "Escolha o mês e o ano, para visualizar as datas disponíves\n\n");
-        //função calendario, para visualizar os dias disponiveis
-        calendario();
-        printf("Você selecionou Agenda de Visitas.\n");
-                // Coloque a l gica da agenda de visitas aqui
-                int dia , mes, ano, formula, dia_semana;
-                int hora , min;
-                char opcao;
+        Chacara chacarasDisponiveis[10];
+        int numChacarasNovas;
+        printf("Quantas chácaras você deseja cadastrar? ");
+        scanf("%d", &numChacarasNovas);
+        getchar(); // Limpar o buffer do teclado
 
-                printf("\n-----Digite a data que deseja agendar a visita (DD/MM/AAAA)------- ");
-                printf("\nDigite o ano: ");
-                scanf("%d", &ano);
-                printf("\nDigite o mês: ");
-                scanf("%d", &mes);
-                printf("\nDigite o dia: ");
-                scanf("%d", &dia);
+        for (int i = 0; i < numChacarasNovas; i++) {
+            Chacara novaChacara;
+            char nome[MAX_NOME];
+            const char *caracteristicas[MAX_CARACTERISTICAS];
 
-                formula = dia + 2*mes + (3*(mes+1)/5) + ano + ano/4 - ano/100 + ano/400 + 2;
-                dia_semana = formula % 7;
+            printf("Digite o nome da chácara: ");
+            fgets(nome, MAX_NOME, stdin);
+            nome[strcspn(nome, "\n")] = 0; // Remover a quebra de linha
 
-                printf("\n-----%d/%d/%d-----", dia, mes, ano);
+            printf("Digite as características da chácara (até 9 itens separadas por vírgula): ");
+            char caracteristicasString[500];
+            fgets(caracteristicasString, 500, stdin);
+            char *token = strtok(caracteristicasString, ",");
+            int j = 0;
+            while (token != NULL && j < MAX_CARACTERISTICAS) {
+                token[strcspn(token, "\n")] = 0; // Remover a quebra de linha
+                caracteristicas[j] = token;
+                token = strtok(NULL, ",");
+                j++;
+            }
 
-                if(dia_semana == 0){
-                    printf("\nEsse data é um Sábado");
-                }
+            preencherChacara(&novaChacara, nome, caracteristicas);
+            chacarasDisponiveis[i] = novaChacara;
+        }
 
-                else if(dia_semana == 1){
-                    printf("\nEsse data é um Domingo");
-                }
-
-                else if(dia_semana == 2){
-                    printf("\nEsse data é uma Segunda - feira\n");
-                }
-
-                else if(dia_semana == 3){
-                    printf("\nEsse data é uma Terça - feira\n");
-                }
-
-                else if(dia_semana == 4){
-                    printf("\nEsse data é uma Quarta - feira\n");
-                }
-
-                else if(dia_semana == 5){
-                    printf("\nEsse data é uma Quinta - feira\n");
-                }
-
-                else if(dia_semana == 6){
-                    printf("\nEsse data é uma Sexta - feira\n");
-                }
-
-                printf("\n-----Digite o horário que deseja agendar a visita (H:Min)------- ");
-                printf("\nDigite a hora: ");
-                scanf("\n%d", &hora);
-                printf("\nDigite o minuto: ");
-                scanf("\n%d", &min);
-                printf("\n------%.2d:%.2d-----", hora, min);
-
-                if(hora < 10 || hora > 18){
-
-                    printf("\nHorário inválido\n");
-                }
-
-                printf("\nConfirma essa data e horário? (S/N)");
-                scanf("%s", &opcao);
-                if (opcao == 'S' || opcao == 's'){
-                    printf("\nAgendamento finalizado!\n");
+        printf("\nChácaras cadastradas:\n");
+        for (int i = 0; i < numChacarasNovas; i++) {
+            exibirChacara(chacarasDisponiveis[i]);
         }
 
 
         break;
+      case 3:
+        printf("Você selecionou Visualizar Chácaras Disponíveis.\n"); 
+        // Coloque a l�gica de Visualização de Chácaras Disponíveis
+        //Chacara chacarasDisponiveis[10];
+
+        const char *caracteristicas1[9] = {"250m²", "Estacionamento para até 10 carros", "Contém Churrasqueira",
+                                          "Freezer", "2 fogões", "Wi-fi", "3 Quartos", "Geladeira", "Limpeza inclusa"};
+        const char *caracteristicas2[9] = {"150m²", "Estacionamento para até 5 carros", "Sem Churrasqueira",
+                                          "1 fogão", "Sem Freezer", "Sem Wi-fi", "1 Quarto", "Geladeira", "Limpeza não inclusa"};
+        const char *caracteristicas3[9] = {"200m²", "Estacionamento para até 8 carros", "Contém Churrasqueira",
+                                          "Freezer", "2 fogões", "Wi-fi", "2 Quartos", "Geladeira", "Limpeza inclusa"};
+
+        preencherChacara(&chacarasDisponiveis[0], "RECANTO DOS SONHOS", caracteristicas1);
+        preencherChacara(&chacarasDisponiveis[1], "CHÁCARA GABI", caracteristicas2);
+        preencherChacara(&chacarasDisponiveis[2], "OS CARACÓIS", caracteristicas3);
+
+
+        for (int i = 0; i < 3; i++) {
+            exibirChacara(chacarasDisponiveis[i]);
+        }
+        break;
       case 4:
+        printf("Voc� selecionou Agenda de Visitas.\n");
+        // Coloque a l�gica da agenda de visitas aqui
+        printf(
+            "Escolha o mês e o ano, para visualizar as datas disponíves\n\n");
+        calendario();
+        int dia, mes, ano;
+        int hora = 0, min = 0;
+        char opcao;
+
+        printf("\nQue dia você deseja agendar uma visita? ");
+        scanf("%d %d %d", &dia, &mes, &ano);
+        printf("\n%d/%d/%d", dia, mes, ano);
+        printf("\nConfirma essa data? (S/N) ");
+        scanf("%s", &opcao);
+        if (opcao == 'S' || opcao == 's') {
+          printf("Opção válida\n");
+
+        } else if ((opcao == 'N' || opcao == 'n')) {
+          printf("Opção inválida\n");
+        }
+        printf("\nQue hora você deseja agendar o horário? ");
+        scanf("\n%d", &hora);
+        scanf("\n%d", &min);
+
+        printf("%d:%d", hora, min);
+        printf("\nConfirma esse horário? (S/N)");
+        scanf("%s", &opcao);
+        if (opcao == 'S' || opcao == 's') {
+          printf("Opção válida\n");
+
+        } else if ((opcao == 'N' || opcao == 'n')) {
+          printf("Opção inválida\n");
+        }
+
+        break;
+      case 5:
         // Coloque a l�gica da agenda de di�rias aqui
         printf("Você selecionou Agendar Diárias.\n\n");
         agendarNoCalendario();
         printf("\n\n");
         break;
-      case 5:
+      case 6:
         printf("Voc� selecionou Contrato.\n");
         // Coloque a l�gica do contrato aqui
         // Vari�veis para informa��es do contrato
@@ -695,13 +672,13 @@ int main() {
         printf("Campinas, SP\n\n");
         printf("Assinatura do Locador: ____________\n");
         break;
-      case 6:
+      case 7:
         printf("Voc� selecionou Calendario.\n\n");
         // Coloque a l�gica do calendario aqui
         calendario();
         break;
 
-      case 7:
+      case 8:
         printf("Saindo...\n");
         exit(0); // Saia do programa
       default:
