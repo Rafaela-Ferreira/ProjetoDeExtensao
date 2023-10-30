@@ -309,8 +309,8 @@ void preencherChacara(Chacara *chacara, const char *nome, const char *caracteris
 }
 
 void exibirChacara(Chacara chacara) {
-    printf("Nome: %s\n", chacara.nome);
-    printf("Características:\n");
+    printf("\033[34m%s\033[0m\n", chacara.nome); 
+    printf("\033[1mDESCRIÇÃO:\033[0m\n");
     for (int i = 0; i < MAX_CARACTERISTICAS; i++) {
         printf("%s\n", chacara.caracteristicas[i]);
     }
@@ -370,7 +370,7 @@ int main() {
         printf("Login falhou. Tente novamente.\n");
       }
     } else {
-      printf("\n*** Menu Principal ***\n");
+      printf("\033[1m\n*** MENU PRINCIPAL ***\n\033[0m\n");
       printf("1. Cadastro de Clientes\n");
       printf("2. Cadastro de Chácaras\n");
       printf("3. Visualizar Chácaras Disponíveis\n"); 
@@ -679,10 +679,11 @@ int main() {
         break;
 
       case 8:
-        printf("Saindo...\n");
+        printf("\033[0;31mSaindo...\n");
         exit(0); // Saia do programa
       default:
-        printf("Op��o inv�lida. Tente novamente.\n");
+        printf("\n");
+        printf("\033[1;31mOpção inválida. Tente novamente.\033[0m\n");
       }
     }
   }
