@@ -470,40 +470,111 @@ int main() {
         }
         break;
       case 4:
-        printf("\033[1m\nVOCÊ SELECIONOU AGENDAR VISITAS.\n\n\033[0m");
-        // Coloque a l�gica da agenda de visitas aqui
-        printf(
-            "Escolha o mês e o ano, para visualizar as datas disponíves\n\n");
+        printf("Você selecionou Agenda de Visitas.\n");
+        // Coloque a logica da agenda de visitas aqui
+        printf("Escolha o mês e o ano, para visualizar as datas disponíves\n\n");
+        //função calendario, para visualizar os dias disponiveis
         calendario();
-        int dia, mes, ano;
-        int hora = 0, min = 0;
+        //Variáveis para validar a as informações das datas
+        int dia , mes, ano, formula, dia_semana;
+        int hora , min;
         char opcao;
 
-        printf("\nQue dia você deseja agendar uma visita? ");
-        scanf("%d %d %d", &dia, &mes, &ano);
-        printf("\n%d/%d/%d", dia, mes, ano);
-        printf("\nConfirma essa data? (S/N) ");
-        scanf("%s", &opcao);
-        if (opcao == 'S' || opcao == 's') {
-          printf("Opção válida\n");
+        //Solicita a data da visita
+        printf("\n-----Digite a data que deseja agendar a visita (DD/MM/AAAA)------- ");
+        //Solicita o ano da visita
+        printf("\nDigite o ano: ");
+        scanf("%d", &ano);
+        //Não valida o ano se estiver fora do intervalo
+        while(ano < 2023 || ano > 2100){
 
-        } else if ((opcao == 'N' || opcao == 'n')) {
-          printf("Opção inválida\n");
-        }
-        printf("\nQue hora você deseja agendar o horário? ");
+                printf("\nO ano digitado é inválido! \nO ano tem que estar no intervalo entre 2023 e 2100");
+                printf("\nDigite o ano novamente: ");
+                scanf("%d", &ano);
+                }
+
+        //Solicita o mês da visita
+        printf("\nDigite o mês: ");
+        scanf("%d", &mes);
+        //Não valida o mês se estiver fora do intervalo
+        while(mes < 1 || mes > 12){
+
+                printf("\nO mês digitado é inválido! \nO mês tem que estar no intervalo entre 1 e 12");
+                printf("\nDigite o mês novamente: ");
+                scanf("%d", &mes);
+                }
+
+        //Solicita o dia
+        printf("\nDigite o dia: ");
+        scanf("%d", &dia);
+
+        //Mostra a data que foi digitada
+        printf("\n-----%d/%d/%d-----", dia, mes, ano);
+
+        //Fórmula para calcular o dia da semana que foi digitado pelo usuário
+        formula = dia + 2*mes + (3*(mes+1)/5) + ano + ano/4 - ano/100 + ano/400 + 2;
+        dia_semana = (formula + 6) % 7;
+
+        //Mostra o dia da semana dependendo do resultado da fórmula
+        if(dia_semana == 0){
+                printf("\nEssa data é um Domingo");
+                }
+
+        else if(dia_semana == 1){
+                printf("\nEssa data é uma Segunda - feira");
+                }
+
+        else if(dia_semana == 2){
+                printf("\nEssa data é uma Terça - feira\n");
+                }
+
+        else if(dia_semana == 3){
+                printf("\nEssa data é uma Quarta - feira\n");
+                }
+
+        else if(dia_semana == 4){
+                printf("\nEssa data é uma Quinta - feira\n");
+                }
+
+        else if(dia_semana == 5){
+                printf("\nEssa data é uma Sexta - feira\n");
+                }
+
+        else if(dia_semana == 6){
+                printf("\nEssa data é um Sábado\n");
+                }
+
+        //Solicita o horário da vissita
+        printf("\n-----Digite o horário que deseja agendar a visita (H:Min)------- ");
+        //Solicita a hora da visita
+        printf("\nDigite a hora: ");
         scanf("\n%d", &hora);
+        //Solicita o minuto da visita
+        printf("\nDigite o minuto: ");
         scanf("\n%d", &min);
+        //Mostra o horário da visita que foi digitado
+        printf("\n------%.2d:%.2d-----", hora, min);
 
-        printf("%d:%d", hora, min);
-        printf("\nConfirma esse horário? (S/N)");
+        //Não valida o horário  se estiver fora do intervalo (Sujeito a mudanças)
+        while(hora < 10 || hora > 18){
+                printf("\nHorário inválido!\n");
+                printf("\nDigite a hora novamente: ");
+                scanf("\n%d", &hora);
+                printf("\nDigite o minuto novamente: ");
+                scanf("\n%d", &min);
+                }
+
+        // Mostra o calendário com o dia da visita agendada (Incompleto)
+        printf("\nCalendário com o dia da visita agendada:\n");
+        printf("=============================================\n");
+        //void destacarDiasSelecionados(mes, ano, dia, dia_semana);
+
+        //Solicita a confirmação da data e horário digitados
+        printf("\nConfirma essa data e horário? (S/N)");
         scanf("%s", &opcao);
-        if (opcao == 'S' || opcao == 's') {
-          printf("Opção válida\n");
-
-        } else if ((opcao == 'N' || opcao == 'n')) {
-          printf("Opção inválida\n");
+        if (opcao == 'S' || opcao == 's'){
+                printf("\nAgendamento finalizado!\n");
         }
-
         break;
       case 5:
         // Coloque a l�gica da agenda de di�rias aqui
