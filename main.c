@@ -3,8 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+
 // Função para fazer o cadastro de clientes
-//  Definição da estrutura para o contrato de locação
 typedef struct {
   char cliente_nome[100];
   char tel[20];
@@ -16,8 +16,9 @@ typedef struct {
   float taxa_quebra;
   char assinatura[100];
 } Contrato;
+
+//função paa criar contratos
 void criarContrato(Contrato *contrato) {
-  setlocale(LC_ALL, "Portuguese");
   setbuf(stdin, NULL);
   printf("Nome do cliente: ");
   fgets(contrato->cliente_nome, sizeof(contrato->cliente_nome), stdin);
@@ -60,8 +61,9 @@ void criarContrato(Contrato *contrato) {
          "--");
   setbuf(stdin, NULL);
 }
+
+// função para salvar contratos
 void salvarContrato(Contrato *contrato) {
-  setlocale(LC_ALL, "Portuguese_Brasil");
   FILE *arquivo = fopen("contrato_chacara.doc", "w");
   if (arquivo == NULL) {
     printf("Erro ao abrir o arquivo!\n");
@@ -102,7 +104,7 @@ int calcularDiaSemana(int ano, int mes, int dia) {
   diaDaSemana = (diaDaSemana + 6) % 7;
   return diaDaSemana;
 }
-
+//função para destacar dias selecionados - cor [sab, dom], e quantidades de dias no mês.
 void destacarDiasSelecionados(int mes, int ano, int diasAgendados[],
                               int numDias) {
   char *nomesDosMeses[] = {"",        "Janeiro",  "Fevereiro", "Março",
@@ -155,8 +157,7 @@ int verificarAno(int ano) {
   }
   return 1;
 }
-// Função para solicitar ao usuário os dias a serem agendados e destacá-los no
-// calendário
+// Função para solicitar ao usuário os dias a serem agendados e destacá-los no calendário
 void agendarNoCalendario() {
   time_t now;
   struct tm *local;
@@ -175,8 +176,6 @@ void agendarNoCalendario() {
       break;
     }
   }
-
-  // Restante do código
 
   while (1) {
     printf("Digite o mês (entre 1 e 12): ");
@@ -211,7 +210,7 @@ void agendarNoCalendario() {
   printf("=============================================\n");
   destacarDiasSelecionados(mes, ano, diasAgendados, numDias);
 }
-
+//função exibir o calendario
 void calendario() {
   int ano, mes;
   while (1) {
@@ -255,7 +254,7 @@ void calendario() {
     printf("\t");
   }
 
-  // Gerar 3 dias aleatórios
+  // Gerar 5 dias aleatórios
   int diasRealcados[5];
   for (int i = 0; i < 5; i++) {
     diasRealcados[i] = rand() % diasNoMes[mes] + 1;
@@ -288,7 +287,7 @@ void calendario() {
   printf("\n");
 }
 
-// função cadastro de chácaras
+// função cadastro de chácaras - variaveis globais
 #define MAX_CARACTERISTICAS 9
 #define MAX_NOME 50
 
@@ -314,18 +313,18 @@ void exibirChacara(Chacara chacara) {
   printf("\n");
 }
 
-// Definindo a estrutura para armazenar informa��es do usu�rio
+// Definindo a estrutura para armazenar informações do usuario
 struct Usuario {
   char nome[50];
   char senha[20];
 };
-// Fun��o para verificar o login
+// Função para verificar o login
 int verificarLogin(struct Usuario usuarios[], int numUsuarios, char nome[],
                    char senha[]) {
   for (int i = 0; i < numUsuarios; i++) {
     if (strcmp(usuarios[i].nome, nome) == 0 &&
         strcmp(usuarios[i].senha, senha) == 0) {
-      return i; // Retorna o �ndice do usu�rio se o login for bem-sucedido
+      return i; // Retorna o indice do usuario se o login for bem-sucedido
     }
   }
   return -1; // Retorna -1 se o login falhar
@@ -333,7 +332,7 @@ int verificarLogin(struct Usuario usuarios[], int numUsuarios, char nome[],
 
 int main() {
   setlocale(LC_ALL, "Portuguese");
-  // Defina os dados do usu�rio.
+  // Defina os dados do usuario.
   struct Usuario usuarios[2];
   strcpy(usuarios[0].nome, "usuario1");
   strcpy(usuarios[0].senha, "senha1");
@@ -428,11 +427,9 @@ int main() {
 
         break;
       case 3:
-        printf("\n\033[1mVOCÊ SELECIONOU VISUALIZAR CHÁCARAS "
-               "DISPONÍVEIS.\n\n\033[0m");
+        printf("\n\033[1mVOCÊ SELECIONOU VISUALIZAR CHÁCARAS DISPONÍVEIS.\n\n\033[0m");
         // Coloque a l�gica de Visualização de Chácaras Disponíveis
         // Chacara chacarasDisponiveis[10];
-
         const char *caracteristicas1[9] = {"250m²",
                                            "Estacionamento para até 10 carros",
                                            "Contém Churrasqueira",
