@@ -487,22 +487,20 @@ int main() {
         scanf("%d", &ano);
         //Não valida o ano se estiver fora do intervalo
         while(ano < 2023 || ano > 2100){
-
-                printf("\nO ano digitado é inválido! \nO ano tem que estar no intervalo entre 2023 e 2100");
-                printf("\nDigite o ano novamente: ");
-                scanf("%d", &ano);
-                }
+          printf("\nO ano digitado é inválido! \nO ano tem que estar no intervalo entre 2023 e 2100");
+          printf("\nDigite o ano novamente: ");
+          scanf("%d", &ano);
+        }
 
         //Solicita o mês da visita
         printf("\nDigite o mês: ");
         scanf("%d", &mes);
         //Não valida o mês se estiver fora do intervalo
         while(mes < 1 || mes > 12){
-
-                printf("\nO mês digitado é inválido! \nO mês tem que estar no intervalo entre 1 e 12");
-                printf("\nDigite o mês novamente: ");
-                scanf("%d", &mes);
-                }
+          printf("\nO mês digitado é inválido! \nO mês tem que estar no intervalo entre 1 e 12");
+          printf("\nDigite o mês novamente: ");
+          scanf("%d", &mes);
+        }
 
         //Solicita o dia
         printf("\nDigite o dia: ");
@@ -517,32 +515,32 @@ int main() {
 
         //Mostra o dia da semana dependendo do resultado da fórmula
         if(dia_semana == 0){
-                printf("\nEssa data é um Domingo");
-                }
+          printf("\nEssa data é um Domingo");
+        }
 
         else if(dia_semana == 1){
-                printf("\nEssa data é uma Segunda - feira");
-                }
+          printf("\nEssa data é uma Segunda - feira");
+        }
 
         else if(dia_semana == 2){
-                printf("\nEssa data é uma Terça - feira\n");
-                }
+          printf("\nEssa data é uma Terça - feira\n");
+        }
 
         else if(dia_semana == 3){
-                printf("\nEssa data é uma Quarta - feira\n");
-                }
+          printf("\nEssa data é uma Quarta - feira\n");
+        }
 
         else if(dia_semana == 4){
-                printf("\nEssa data é uma Quinta - feira\n");
-                }
+          printf("\nEssa data é uma Quinta - feira\n");
+        }
 
         else if(dia_semana == 5){
-                printf("\nEssa data é uma Sexta - feira\n");
-                }
+          printf("\nEssa data é uma Sexta - feira\n");
+        }
 
         else if(dia_semana == 6){
-                printf("\nEssa data é um Sábado\n");
-                }
+          printf("\nEssa data é um Sábado\n");
+        }
 
         //Solicita o horário da vissita
         printf("\n-----Digite o horário que deseja agendar a visita (H:Min)------- ");
@@ -557,12 +555,12 @@ int main() {
 
         //Não valida o horário  se estiver fora do intervalo (Sujeito a mudanças)
         while(hora < 10 || hora > 18){
-                printf("\nHorário inválido!\n");
-                printf("\nDigite a hora novamente: ");
-                scanf("\n%d", &hora);
-                printf("\nDigite o minuto novamente: ");
-                scanf("\n%d", &min);
-                }
+          printf("\nHorário inválido!\n");
+          printf("\nDigite a hora novamente: ");
+          scanf("\n%d", &hora);
+          printf("\nDigite o minuto novamente: ");
+          scanf("\n%d", &min);
+        }
 
         // Mostra o calendário com o dia da visita agendada (Incompleto)
         printf("\nCalendário com o dia da visita agendada:\n");
@@ -573,7 +571,7 @@ int main() {
         printf("\nConfirma essa data e horário? (S/N)");
         scanf("%s", &opcao);
         if (opcao == 'S' || opcao == 's'){
-                printf("\nAgendamento finalizado!\n");
+          printf("\nAgendamento finalizado!\n");
         }
         break;
       case 5:
@@ -665,12 +663,8 @@ int main() {
 
         // 4.2 Verifica��o dia da loca��o (M�s com 28 ou 29 dias)
         // 4.3 verificar se o ano � bissexto ou n�o
-        for (int anoBissexto = 2024; anoBissexto <= anoEvento;
-             anoBissexto += 4) {
-          maxDiasFevereiro = (anoBissexto % 4 == 0 && (anoBissexto % 100 != 0 ||
-                                                       anoBissexto % 400 == 0))
-                                 ? 29
-                                 : 28;
+        for (int anoBissexto = 2024; anoBissexto <= anoEvento; anoBissexto += 4) {
+          maxDiasFevereiro = (anoBissexto % 4 == 0 && (anoBissexto % 100 != 0 || anoBissexto % 400 == 0)) ? 29 : 28;
         }
 
         if (mesEvento == 2) {
