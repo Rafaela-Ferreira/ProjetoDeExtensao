@@ -306,38 +306,31 @@ void calendario() {
 }
 
 // -------- 8. FUNÇÃO CADASTRO DE CHÁCARAS - VARIÁVEIS GLOBAIS ---------
-#define MAX_CARACTERISTICAS 9
-#define MAX_NOME 50
-
-typedef struct
-{
-    char nome[MAX_NOME];
-    char caracteristicas[MAX_CARACTERISTICAS][100];
+// Definição da estrutura Chacara
+typedef struct Chacara {
+    const char *caracteristicas[9];
+    char nome[50];
 } Chacara;
 
-void preencherChacara(Chacara *chacara, const char *nome,
-                      const char *caracteristicas[MAX_CARACTERISTICAS])
-{
-    snprintf(chacara->nome, MAX_NOME, "%s", nome);
-    for (int i = 0; i < MAX_CARACTERISTICAS; i++)
-    {
-        snprintf(chacara->caracteristicas[i], 100, "%s", caracteristicas[i]);
+// Função para preencher os dados da chácara
+void preencherChacara(Chacara *chacara, char nome[50], const char **caracteristicas) {
+    int i;
+    for (i = 0; i < 9; i++) {
+        chacara->caracteristicas[i] = caracteristicas[i];
+    }
+    strcpy(chacara->nome, nome);
+}
+
+// Função para exibir apenas o nome das chácaras disponíveis
+void exibirNomesChacarasDisponiveis(Chacara ch[], int n) {
+    printf("Chácaras Disponíveis:\n");
+    for (int i = 0; i < n; i++) {
+        printf("%d. %s\n", i + 1, ch[i].nome);
     }
 }
 
-void exibirChacara(Chacara chacara)
-{
-    printf("\033[34m%s\033[0m\n", chacara.nome);
-    printf("\033[1mDESCRIÇÃO:\033[0m\n");
-    for (int i = 0; i < MAX_CARACTERISTICAS; i++)
-    {
-        printf("%s\n", chacara.caracteristicas[i]);
-    }
-    printf("\n");
-}
-
-// Função para visualizar chácaras disponíveis
-void visualizarChacarasDisponiveis() {
+// Função para visualizar chácaras disponíveis e permitir que o usuário escolha uma
+Chacara visualizarChacarasDisponiveis() {
     Chacara chacarasDisponiveis[3];
 
     const char *caracteristicas1[9] = {
@@ -380,9 +373,24 @@ void visualizarChacarasDisponiveis() {
     preencherChacara(&chacarasDisponiveis[1], "CHÁCARA GABI", caracteristicas2);
     preencherChacara(&chacarasDisponiveis[2], "OS CARACÓIS", caracteristicas3);
 
-    for (int i = 0; i < 3; i++) {
-        exibirChacara(chacarasDisponiveis[i]);
+    exibirNomesChacarasDisponiveis(chacarasDisponiveis, 3);
+
+    int escolha;
+    do {
+        printf("Escolha uma chácara (1, 2 ou 3): ");
+        scanf("%d", &escolha);
+    } while (escolha < 1 || escolha > 3);
+
+    return chacarasDisponiveis[escolha - 1];
+}
+
+// vizualizar const de chacaras
+void visualizarConstantes(const char *nomeChacara, const char *caracteristicas[], int num) {
+   printf("\033[1;34m%s:\n\033[0m", nomeChacara);
+    for (int i = 0; i < num; i++) {
+        printf("%s\n", caracteristicas[i]);
     }
+    printf("\n");
 }
 
 // ------------- 9. DEFININDO A ESTRUTURA PARA ARMAZENAR INFORMAÇÕES DO USUÁRIO -------------
@@ -473,7 +481,8 @@ int main()
             case 2:
                 printf("\n\033[1mVOCÊ SELECIONOU CADASTRO DE CHÁCARAS.\033[0m\n\n");
                 // Coloque a lógica do Cadastro de Chácaras
-                Chacara chacarasDisponiveis[10];
+                /*
+              Chacara chacarasDisponiveis[10];
                 int numChacarasNovas;
                 printf("Quantas chácaras você deseja cadastrar? ");
                 scanf("%d", &numChacarasNovas);
@@ -512,13 +521,52 @@ int main()
                 {
                     exibirChacara(chacarasDisponiveis[i]);
                 }
-
+                */
                 break;
 
             case 3:
               printf("\n\033[1mVOCÊ SELECIONOU VISUALIZAR CHÁCARAS DISPONÍVEIS.\n\n\033[0m");
               // Coloque a lógica de Visualização de Chácaras Disponíveis
-              visualizarChacarasDisponiveis();
+              const char *caracteristicas1[9] = {
+                  "250m²",
+                  "Estacionamento para até 10 carros",
+                  "Contém Churrasqueira",
+                  "Freezer",
+                  "2 fogões",
+                  "Wi-fi",
+                  "3 Quartos",
+                  "Geladeira",
+                  "Limpeza inclusa"
+              };
+
+              const char *caracteristicas2[9] = {
+                  "150m²",
+                  "Estacionamento para até 5 carros",
+                  "Sem Churrasqueira",
+                  "1 fogão",
+                  "Sem Freezer",
+                  "Sem Wi-fi",
+                  "1 Quarto",
+                  "Geladeira",
+                  "Limpeza não inclusa"
+              };
+
+              const char *caracteristicas3[9] = {
+                  "200m²",
+                  "Estacionamento para até 8 carros",
+                  "Contém Churrasqueira",
+                  "Freezer",
+                  "2 fogões",
+                  "Wi-fi",
+                  "2 Quartos",
+                  "Geladeira",
+                  "Limpeza inclusa"
+              };
+
+              visualizarConstantes("RECANTO DOS SONHOS", caracteristicas1, 9);
+              visualizarConstantes("CHÁCARA GABI", caracteristicas2, 9);
+              visualizarConstantes("OS CARACÓIS", caracteristicas3, 9);
+              
                 break;
             case 4:
                 printf("Você selecionou Agenda de Visitas.\n");
@@ -639,18 +687,13 @@ int main()
 
             case 5:
                 // Coloque a lógica da agenda de diárias aqui
-                //printf("\n\033[1mVOCÊ SELECIONOU VISUALIZAR CHÁCARAS DISPONÍVEIS.\n\n\033[0m");
-                visualizarChacarasDisponiveis();
-                
-                printf("Escolha uma chacara:  ------");
-  
-                
                 printf("\n\033[1m\nVOCÊ SELECIONOU AGENDAR DIÁRIAS.\n\n\033[0m");
+                visualizarChacarasDisponiveis(); 
+                printf("\n\nEscolha a data do evento!\n\n");  
                 agendarNoCalendario();
+                printf("\033[0;32mData agendada com sucesso!\033[0m");
                 printf("\n\n");
-  
                 break;
-
             case 6:
                 printf("\n\033[1mVOCÊ SELECIONOU CONTRATO.\033[0m\n");
                 // Coloque a lógica do contrato aqui
