@@ -336,6 +336,55 @@ void exibirChacara(Chacara chacara)
     printf("\n");
 }
 
+// Função para visualizar chácaras disponíveis
+void visualizarChacarasDisponiveis() {
+    Chacara chacarasDisponiveis[3];
+
+    const char *caracteristicas1[9] = {
+        "250m²",
+        "Estacionamento para até 10 carros",
+        "Contém Churrasqueira",
+        "Freezer",
+        "2 fogões",
+        "Wi-fi",
+        "3 Quartos",
+        "Geladeira",
+        "Limpeza inclusa"
+    };
+
+    const char *caracteristicas2[9] = {
+        "150m²",
+        "Estacionamento para até 5 carros",
+        "Sem Churrasqueira",
+        "1 fogão",
+        "Sem Freezer",
+        "Sem Wi-fi",
+        "1 Quarto",
+        "Geladeira",
+        "Limpeza não inclusa"
+    };
+
+    const char *caracteristicas3[9] = {
+        "200m²",
+        "Estacionamento para até 8 carros",
+        "Contém Churrasqueira",
+        "Freezer",
+        "2 fogões",
+        "Wi-fi",
+        "2 Quartos",
+        "Geladeira",
+        "Limpeza inclusa"
+    };
+
+    preencherChacara(&chacarasDisponiveis[0], "RECANTO DOS SONHOS", caracteristicas1);
+    preencherChacara(&chacarasDisponiveis[1], "CHÁCARA GABI", caracteristicas2);
+    preencherChacara(&chacarasDisponiveis[2], "OS CARACÓIS", caracteristicas3);
+
+    for (int i = 0; i < 3; i++) {
+        exibirChacara(chacarasDisponiveis[i]);
+    }
+}
+
 // ------------- 9. DEFININDO A ESTRUTURA PARA ARMAZENAR INFORMAÇÕES DO USUÁRIO -------------
 struct Usuario
 {
@@ -467,51 +516,9 @@ int main()
                 break;
 
             case 3:
-                printf("\n\033[1mVOCÊ SELECIONOU VISUALIZAR CHÁCARAS DISPONÍVEIS.\n\n\033[0m");
-                // Coloque a lógica de Visualização de Chácaras Disponíveis
-                // Chacara chacarasDisponiveis[10];
-                const char *caracteristicas1[9] = {"250m²",
-                                                   "Estacionamento para até 10 carros",
-                                                   "Contém Churrasqueira",
-                                                   "Freezer",
-                                                   "2 fogões",
-                                                   "Wi-fi",
-                                                   "3 Quartos",
-                                                   "Geladeira",
-                                                   "Limpeza inclusa"
-                                                  };
-                const char *caracteristicas2[9] = {"150m²",
-                                                   "Estacionamento para até 5 carros",
-                                                   "Sem Churrasqueira",
-                                                   "1 fogão",
-                                                   "Sem Freezer",
-                                                   "Sem Wi-fi",
-                                                   "1 Quarto",
-                                                   "Geladeira",
-                                                   "Limpeza não inclusa"
-                                                  };
-                const char *caracteristicas3[9] = {"200m²",
-                                                   "Estacionamento para até 8 carros",
-                                                   "Contém Churrasqueira",
-                                                   "Freezer",
-                                                   "2 fogões",
-                                                   "Wi-fi",
-                                                   "2 Quartos",
-                                                   "Geladeira",
-                                                   "Limpeza inclusa"
-                                                  };
-
-                preencherChacara(&chacarasDisponiveis[0], "RECANTO DOS SONHOS",
-                                 caracteristicas1);
-                preencherChacara(&chacarasDisponiveis[1], "CHÁCARA GABI",
-                                 caracteristicas2);
-                preencherChacara(&chacarasDisponiveis[2], "OS CARACÓIS",
-                                 caracteristicas3);
-
-                for (int i = 0; i < 3; i++)
-                {
-                    exibirChacara(chacarasDisponiveis[i]);
-                }
+              printf("\n\033[1mVOCÊ SELECIONOU VISUALIZAR CHÁCARAS DISPONÍVEIS.\n\n\033[0m");
+              // Coloque a lógica de Visualização de Chácaras Disponíveis
+              visualizarChacarasDisponiveis();
                 break;
             case 4:
                 printf("Você selecionou Agenda de Visitas.\n");
@@ -632,10 +639,16 @@ int main()
 
             case 5:
                 // Coloque a lógica da agenda de diárias aqui
+                //printf("\n\033[1mVOCÊ SELECIONOU VISUALIZAR CHÁCARAS DISPONÍVEIS.\n\n\033[0m");
+                visualizarChacarasDisponiveis();
+                
+                printf("Escolha uma chacara:  ------");
+  
+                
                 printf("\n\033[1m\nVOCÊ SELECIONOU AGENDAR DIÁRIAS.\n\n\033[0m");
                 agendarNoCalendario();
                 printf("\n\n");
-
+  
                 break;
 
             case 6:
