@@ -306,29 +306,68 @@ void calendario() {
 }
 
 // -------- 8. FUNÇÃO CADASTRO DE CHÁCARAS - VARIÁVEIS GLOBAIS ---------
+#define MAX_NOME 50
+#define MAX_CARACTERISTICAS 9
+#define MAX_CHACARAS 10
+
 // Definição da estrutura Chacara
 typedef struct Chacara {
-    const char *caracteristicas[9];
-    char nome[50];
+    char caracteristicas[MAX_CARACTERISTICAS][MAX_NOME];
+    char nome[MAX_NOME];
 } Chacara;
 
 // Função para preencher os dados da chácara
-void preencherChacara(Chacara *chacara, char nome[50], const char **caracteristicas) {
-    int i;
-    for (i = 0; i < 9; i++) {
-        chacara->caracteristicas[i] = caracteristicas[i];
+void preencherChacara(Chacara *chacara, char nome[MAX_NOME], char caracteristicas[MAX_CARACTERISTICAS][MAX_NOME]) {
+    for (int i = 0; i < MAX_CARACTERISTICAS; i++) {
+        strcpy(chacara->caracteristicas[i], caracteristicas[i]);
     }
     strcpy(chacara->nome, nome);
+}
+
+// Função para exibir todos os atributos da chácara
+void exibirChacara(Chacara ch) {
+    printf("\033[1;34m%s\033[0m\n", ch.nome); // Nome em azul e negrito
+    printf("Características:\n");
+    for (int i = 0; i < MAX_CARACTERISTICAS; i++) {
+        printf("%d. %s\n", i + 1, ch.caracteristicas[i]);
+    }
 }
 
 // Função para exibir apenas o nome das chácaras disponíveis
 void exibirNomesChacarasDisponiveis(Chacara ch[], int n) {
     printf("Chácaras Disponíveis:\n");
     for (int i = 0; i < n; i++) {
-        printf("%d. %s\n", i + 1, ch[i].nome);
+      printf("%d. \033[1;34m%s\033[0m\n", i + 1, ch[i].nome);
     }
 }
 
+// Função para cadastrar novas chácaras
+void cadastrarChacaras(Chacara ch[], int n) {
+    for (int i = 0; i < n; i++) {
+        Chacara novaChacara;
+        char nome[MAX_NOME];
+        char caracteristicas[MAX_CARACTERISTICAS][MAX_NOME];
+
+        printf("Digite o nome da chácara: ");
+        fgets(nome, MAX_NOME, stdin);
+        nome[strcspn(nome, "\n")] = 0; // Remover a quebra de linha
+
+        printf("Digite as características da chácara (até 9 itens separados por vírgula): ");
+        char caracteristicasString[500];
+        fgets(caracteristicasString, 500, stdin);
+        char *token = strtok(caracteristicasString, ",");
+        int j = 0;
+        while (token != NULL && j < MAX_CARACTERISTICAS) {
+            token[strcspn(token, "\n")] = 0; // Remover a quebra de linha
+            strcpy(caracteristicas[j], token);
+            token = strtok(NULL, ",");
+            j++;
+        }
+
+        preencherChacara(&novaChacara, nome, caracteristicas);
+        ch[i] = novaChacara;
+    }
+}
 // Função para visualizar chácaras disponíveis e permitir que o usuário escolha uma
 Chacara visualizarChacarasDisponiveis() {
     Chacara chacarasDisponiveis[3];
@@ -437,7 +476,8 @@ int main()
     {
         if (usuarioLogado == -1)
         {
-            printf("Bem-vindo!\n");
+          
+            printf("\033[1mBem-vindo!\n\033[0m\n");
             printf("Nome de usuário: ");
             scanf("%s", nome);
             printf("Senha: ");
@@ -481,47 +521,18 @@ int main()
             case 2:
                 printf("\n\033[1mVOCÊ SELECIONOU CADASTRO DE CHÁCARAS.\033[0m\n\n");
                 // Coloque a lógica do Cadastro de Chácaras
-                /*
-              Chacara chacarasDisponiveis[10];
-                int numChacarasNovas;
-                printf("Quantas chácaras você deseja cadastrar? ");
-                scanf("%d", &numChacarasNovas);
-                getchar(); // Limpar o buffer do teclado
+                // Cadastrar novas chácaras
+              Chacara chacarasDisponiveis[MAX_CHACARAS];
+              int numChacarasNovas;
 
-                for (int i = 0; i < numChacarasNovas; i++)
-                {
-                    Chacara novaChacara;
-                    char nome[MAX_NOME];
-                    const char *caracteristicas[MAX_CARACTERISTICAS];
+              printf("Quantas chácaras você deseja cadastrar? ");
+              scanf("%d", &numChacarasNovas);
+              getchar(); // Limpar o buffer do teclado
 
-                    printf("Digite o nome da chácara: ");
-                    fgets(nome, MAX_NOME, stdin);
-                    nome[strcspn(nome, "\n")] = 0; // Remover a quebra de linha
+              cadastrarChacaras(chacarasDisponiveis, numChacarasNovas);
 
-                    printf("Digite as características da chácara (até 9 itens separadas "
-                           "por vírgula): ");
-                    char caracteristicasString[500];
-                    fgets(caracteristicasString, 500, stdin);
-                    char *token = strtok(caracteristicasString, ",");
-                    int j = 0;
-                    while (token != NULL && j < MAX_CARACTERISTICAS)
-                    {
-                        token[strcspn(token, "\n")] = 0; // Remover a quebra de linha
-                        caracteristicas[j] = token;
-                        token = strtok(NULL, ",");
-                        j++;
-                    }
-
-                    preencherChacara(&novaChacara, nome, caracteristicas);
-                    chacarasDisponiveis[i] = novaChacara;
-                }
-
-                printf("\nChácaras cadastradas:\n");
-                for (int i = 0; i < numChacarasNovas; i++)
-                {
-                    exibirChacara(chacarasDisponiveis[i]);
-                }
-                */
+              printf("\nChácaras cadastradas:\n");
+              exibirNomesChacarasDisponiveis(chacarasDisponiveis, numChacarasNovas);
                 break;
 
             case 3:
@@ -886,7 +897,7 @@ int main()
                 break;
 
             case 8:
-                printf("\033[0;31mSAINDO...\n");
+                printf("\033[1;31mSAINDO...\n");
                 exit(0); // Saia do programa
 
             default:
