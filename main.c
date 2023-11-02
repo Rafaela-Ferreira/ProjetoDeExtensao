@@ -702,7 +702,7 @@ int main()
                 visualizarChacarasDisponiveis(); 
                 printf("\n\nEscolha a data do evento!\n\n");  
                 agendarNoCalendario();
-                printf("\033[0;32mData agendada com sucesso!\033[0m");
+                printf("\033[1;32mData agendada com sucesso!\033[0m");
                 printf("\n\n");
                 break;
             case 6:
