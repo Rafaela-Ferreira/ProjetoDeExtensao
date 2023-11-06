@@ -4,8 +4,8 @@
 #include <string.h>
 #include <time.h>
 
-
-// Função para fazer o cadastro de clientes
+// *** INICIO DAS FUNÇÕES DA KEZIA ***
+// Função para fazer o cadastro de clientes 
 typedef struct
 {
     char cliente_nome[100];
@@ -19,7 +19,7 @@ typedef struct
     char assinatura[100];
 }Contrato;
 
-// ---------------- 1. FUNÇÃO PARA CADASTRAR CLIENTES ------------------
+// ---------------- FUNÇÃO PARA CADASTRAR CLIENTES ------------------
 void criarContrato(Contrato *contrato)
 {
     setbuf(stdin, NULL);
@@ -46,7 +46,7 @@ void criarContrato(Contrato *contrato)
     setbuf(stdin, NULL);
 }
 
- // ------------ 2. FUNÇÃO PARA SALVAR O CADASTRO DE CLIENTES -----------------
+ // ------------ FUNÇÃO PARA SALVAR O CADASTRO DE CLIENTES -----------------
 void salvarContrato(Contrato *contrato)
 {
     FILE *arquivo = fopen("contrato_chacara.doc", "w");
@@ -68,8 +68,10 @@ void salvarContrato(Contrato *contrato)
     fclose(arquivo);
     printf("\n\nCadastro gerado com sucesso e salvo em 'contrato_chacara.doc'.\n");
 }
+// *** FIM DAS FUNÇÕES DA KEZIA ***
 
-// ---------------- 3. FUNÇÃO PARA CALCULAR DIA DA SEMANA PARA DATA ESPECÍFICA ------------------
+// *** INICIO DAS FUNÇÕES DA RAFAELA ***
+// ---------------- 3. FUNÇÃO PARA CALCULAR DIA DA SEMANA PARA DATA ESPECÍFICA - 
 int calcularDiaSemana(int ano, int mes, int dia)
 {
     if (mes < 3)
@@ -133,7 +135,7 @@ void destacarDiasSelecionados(int mes, int ano, int diasAgendados[], int numDias
     }
     printf("\n");
 }
-// ---------------- 5. FUNÇÃO PARA VERIFICAR SE O ANO INSERIDO É VÁLIDO ------------------
+// ---------------- FUNÇÃO PARA VERIFICAR SE O ANO INSERIDO É VÁLIDO ------------------
 int verificarAno(int ano)
 {
     if (ano < 2023 || ano > 2100)
@@ -143,7 +145,7 @@ int verificarAno(int ano)
     }
     return 1;
 }
-// ---------------- 6. FUNÇÃO PARA SOLICITAR AO USUÁRIO OS DIAS A SEREM AGENDADOS E DESTACALOS NO CALENDÁRIO ------------------
+// ---------------- FUNÇÃO PARA SOLICITAR AO USUÁRIO OS DIAS A SEREM AGENDADOS E DESTACALOS NO CALENDÁRIO ------------------
 void agendarNoCalendario()
 {
     time_t now;
@@ -205,7 +207,7 @@ void agendarNoCalendario()
     printf("=============================================\n");
     destacarDiasSelecionados(mes, ano, diasAgendados, numDias);
 }
-//---------------- 7. FUNÇÃO PARA EXIBIR O CALENDÁRIO ------------------
+//----------------  FUNÇÃO PARA EXIBIR O CALENDÁRIO ------------------
 void calendario() {
     int ano, mes;
     while (1)
@@ -305,7 +307,7 @@ void calendario() {
     printf("\n");
 }
 
-// -------- 8. FUNÇÃO CADASTRO DE CHÁCARAS - VARIÁVEIS GLOBAIS ---------
+// -------- FUNÇÃO CADASTRO DE CHÁCARAS - VARIÁVEIS GLOBAIS ---------
 #define MAX_NOME 50
 #define MAX_CARACTERISTICAS 9
 #define MAX_CHACARAS 10
@@ -432,13 +434,13 @@ void visualizarConstantes(const char *nomeChacara, const char *caracteristicas[]
     printf("\n");
 }
 
-// ------------- 9. DEFININDO A ESTRUTURA PARA ARMAZENAR INFORMAÇÕES DO USUÁRIO -------------
+// ------------- DEFININDO A ESTRUTURA PARA ARMAZENAR INFORMAÇÕES DO USUÁRIO -------------
 struct Usuario
 {
     char nome[50];
     char senha[20];
 };
-// --------------- 10. FUNÇÃO PARA VERIFICAR O LOGIN ----------------
+// --------------- FUNÇÃO PARA VERIFICAR O LOGIN ----------------
 int verificarLogin(struct Usuario usuarios[], int numUsuarios, char nome[],
                    char senha[])
 {
@@ -452,7 +454,174 @@ int verificarLogin(struct Usuario usuarios[], int numUsuarios, char nome[],
     }
     return -1; // Retorna -1 se o login falhar
 }
-// -------------------- 11. INÍCIO DA MAIN -----------------------
+// *** FIM DAS FUNÇÕES DA RAFAELA ***
+
+// ***INICIO DAS FUNÇÕES DO GUSTAVO ***
+// ---------------- FUNÇÃO PARA CALCULAR DIA DA SEMANA PARA DATA ESPECÍFICA (GUSTAVO) ------------------
+int calcular_dia_semana(int ano_visita, int mes_visita, int dia_visita)
+{
+    if (mes_visita < 3)
+    {
+        mes_visita += 12;
+        ano_visita--;
+    }
+    int K = ano_visita % 100;
+    int J = ano_visita / 100;
+    int dia_semana = (dia_visita + 13 * (mes_visita + 1) / 5 + K + K / 4 + J / 4 + 5 * J) % 7;
+    // Ajuste para domingo ser o dia 0 e sábado o dia 6
+    dia_semana = (dia_semana + 6) % 7;
+    return dia_semana;
+}
+// ---------------- FUNÇÃO PARA VERIFICAR A VALIDAÇÃO DO ANO INSERIDO (GUSTAVO) ------------------
+int verifica_ano_visita(int ano_visita)
+{
+    if (ano_visita < 2023 || ano_visita > 2100)
+    {
+        printf("\nO ano digitado é inválido! \nO ano tem que estar no intervalo entre 2023 e 2100");
+        return 0;
+    }
+    return 1;
+}
+
+int verifica_mes_visita(int mes_visita)
+{
+    if(mes_visita < 1 || mes_visita > 12)
+    {
+        printf("\nO mês digitado é inválido! \nO mês tem que estar no intervalo entre 1 e 12");
+        return 0;
+
+    }
+    return 1;
+}
+//---------------- FUNÇÃO PARA DESTACAR DIAS SELECIONADOS - COR [SAB, DOM] (GUSTAVO) ------------------
+void destaca_dias_selecionados(int mes_visita, int ano_visita, int diaAgendado,
+                              int numero_dias)
+{
+    char *nome_mes[] = {"",        "Janeiro",  "Fevereiro", "Março",
+                             "Abril",   "Maio",     "Junho",     "Julho",
+                             "Agosto",  "Setembro", "Outubro",   "Novembro",
+                             "Dezembro"
+                            };
+
+    int mes_dias[] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
+    printf("\nCalendário para %s de %d\n", nome_mes[mes_visita], ano_visita);
+    printf("Dom\tSeg\tTer\tQua\tQui\tSex\tSáb\n");
+
+    int mes_primeiro_dia = calcular_dia_semana(ano_visita, mes_visita, 1);
+
+    for (int i = 0; i < mes_primeiro_dia; i++)
+    {
+        printf("\t");
+    }
+
+    for (int dia_visita = 1; dia_visita <= mes_dias[mes_visita]; dia_visita++)
+    {
+        int agendado = 0;
+        for (int i = 0; i < numero_dias; i++)
+        {
+            if (dia_visita == diaAgendado)
+            {
+                agendado = 1;
+                break;
+            }
+        }
+        int dia_semana = calcular_dia_semana(ano_visita, mes_visita, dia_visita);
+
+        if (dia_semana == 0)
+        {
+            printf("\033[1;91m%2d\033[0m\t", dia_visita); // Imprime domingo em vermelho
+        }
+        else if (dia_semana == 6)
+        {
+            printf("\033[0;90m%2d\033[0m\t", dia_visita); // Imprime sábado em cinza
+        }
+        else if (agendado)
+        {
+            printf("\033[1;34m%2d\033[0m\t", dia_visita); // Imprime o dia agendado em azul
+        }
+        else
+        {
+            printf("%2d\t", dia_visita);
+        }
+
+        if ((mes_primeiro_dia + dia_visita) % 7 == 0 || dia_visita == mes_dias[mes_visita])
+        {
+            printf("\n");
+        }
+
+    }
+    printf("\n");
+
+}
+// ---------------- FUNÇÃO PARA SOLICITAR AO USUÁRIO O DIA A SER AGENDADO PARA VISITA E DESTACÁ-LO NO CALENDÁRIO (GUSTAVO) ------------------
+void agendar_visita_calendario()
+{
+    time_t now;
+    struct tm *local;
+    time(&now);
+    local = localtime(&now);
+    int ano_visita_atual = local->tm_year + 1900;
+    int mes_atual = local->tm_mon + 1;
+    int dia_atual = local->tm_mday;
+    int mes_visita, dia_visita, ano_visita;
+    int diaAgendado;
+
+    while (1)
+    {
+        printf("\n-----Digite a data que deseja agendar a visita (DD/MM/AAAA)------- ");
+        printf("\nDigite o ano (entre 2023 e 2100): ");
+        scanf("%d", &ano_visita);
+
+        if (verifica_ano_visita(ano_visita))
+        {
+            break;
+        }
+    }
+
+    while (1)
+    {
+        printf("\nDigite o mês (entre 1 e 12): ");
+        scanf("%d", &mes_visita);
+
+        if (verifica_mes_visita(mes_visita))
+        {
+            break;
+        }
+    }
+    printf("\nDigite o dia a ser agendado para visita (entre 1 e 31): ");
+    scanf("%d", &diaAgendado);
+    // Verificação para garantir que o usuário não agende em datas passadas
+    if (ano_visita == ano_visita_atual && mes_visita < mes_atual)
+    {
+        printf("\nNão é possível agendar para uma data que já passou.\n");
+        return;
+    }
+
+    // Mostra o calendário com os dias agendados em azul
+    printf("\nCalendário com o dia de visita agendado:\n");
+    printf("=============================================\n");
+    destaca_dias_selecionados(mes_visita, ano_visita, diaAgendado, dia_visita);
+
+    //Mostra a data que foi digitada
+    printf("\n-----%d/%d/%d-----", diaAgendado, mes_visita, ano_visita);
+
+    //Mostra o dia da semana dependendo do resultado da fórmula
+    switch(calcular_dia_semana(ano_visita, mes_visita, diaAgendado)){
+
+        case 0: printf("\nEssa data é um Domingo");break;
+        case 1: printf("\nEssa data é uma Segunda - feira");break;
+        case 2: printf("\nEssa data é uma Terça - feira");break;
+        case 3: printf("\nEssa data é uma Quarta - feira");break;
+        case 4: printf("\nEssa data é uma Quinta - feira");break;
+        case 5: printf("\nEssa data é uma Sexta - feira");break;
+        case 6: printf("\nEssa data é um Sábado");break;
+    }
+}
+
+//** FIM DAS FUNÇÕES DO GUSTAVO
+
+// -------------------- INÍCIO DA MAIN -----------------------
 int main()
 {
     setlocale(LC_ALL, "Portuguese");
@@ -476,7 +645,7 @@ int main()
     {
         if (usuarioLogado == -1)
         {
-          
+
             printf("\033[1mBem-vindo!\n\033[0m\n");
             printf("Nome de usuário: ");
             scanf("%s", nome);
@@ -577,123 +746,47 @@ int main()
               visualizarConstantes("RECANTO DOS SONHOS", caracteristicas1, 9);
               visualizarConstantes("CHÁCARA GABI", caracteristicas2, 9);
               visualizarConstantes("OS CARACÓIS", caracteristicas3, 9);
-              
+
                 break;
             case 4:
-                printf("Você selecionou Agenda de Visitas.\n");
-                // Coloque a logica da agenda de visitas aqui
-                printf("Escolha o mês e o ano, para visualizar as datas disponíves\n\n");
-                //função calendario, para visualizar os dias disponiveis
-                calendario();
-                //Variáveis para validar a as informações das datas
-                int dia, mes, ano, formula, dia_semana;
-                int hora, min;
-                char opcao;
+              printf("Você selecionou Agenda de Visitas.\n");
+               // Coloque a logica da agenda de visitas aqui
+               printf("Escolha o mês e o ano, para visualizar as datas disponíves\n\n");
+               //Função calendario, para visualizar os dias disponiveis
+               calendario();
+               //Função agendar_visita_calendario, para solicitar ao usuário o dia a ser agendado para visita e destacá-lo no calendário
+               agendar_visita_calendario();
+               //Variáveis para validar a as informações das datas
+               int hora , min;
+               char opcao;
 
-                //Solicita a data da visita
-                printf("\n-----Digite a data que deseja agendar a visita (DD/MM/AAAA)------- ");
-                //Solicita o ano da visita
-                printf("\nDigite o ano: ");
-                scanf("%d", &ano);
-                //Não valida o ano se estiver fora do intervalo
-                while(ano < 2023 || ano > 2100)
-                {
-                    printf("\nO ano digitado é inválido! \nO ano tem que estar no intervalo entre 2023 e 2100");
-                    printf("\nDigite o ano novamente: ");
-                    scanf("%d", &ano);
-                }
+               //Solicita o horário da vissita
+               printf("\n-----Digite o horário que deseja agendar a visita (H:Min)------- ");
+               //Solicita a hora da visita
+               printf("\nDigite a hora: ");
+               scanf("\n%d", &hora);
+               //Solicita o minuto da visita
+               printf("\nDigite o minuto: ");
+               scanf("\n%d", &min);
+               //Mostra o horário da visita que foi digitado
+               printf("\n------%.2d:%.2d-----", hora, min);
 
-                //Solicita o mês da visita
-                printf("\nDigite o mês: ");
-                scanf("%d", &mes);
-                //Não valida o mês se estiver fora do intervalo
-                while(mes < 1 || mes > 12)
-                {
-                    printf("\nO mês digitado é inválido! \nO mês tem que estar no intervalo entre 1 e 12");
-                    printf("\nDigite o mês novamente: ");
-                    scanf("%d", &mes);
-                }
+               //Não valida o horário  se estiver fora do intervalo
+               while(hora < 9 || hora > 17){
+                      printf("\nHorário inválido!\n");
+                      printf("\nDigite a hora novamente: ");
+                      scanf("\n%d", &hora);
+                      printf("\nDigite o minuto novamente: ");
+                      scanf("\n%d", &min);
+               }
 
-                //Solicita o dia
-                printf("\nDigite o dia: ");
-                scanf("%d", &dia);
+               //Solicita a confirmação da data e horário digitados
+               printf("\nConfirma essa data e horário? (S/N)");
+               scanf("%s", &opcao);
+               if (opcao == 'S' || opcao == 's'){
 
-                //Mostra a data que foi digitada
-                printf("\n-----%d/%d/%d-----", dia, mes, ano);
-
-                //Fórmula para calcular o dia da semana que foi digitado pelo usuário
-                formula = dia + 2*mes + (3*(mes+1)/5) + ano + ano/4 - ano/100 + ano/400 + 2;
-                dia_semana = (formula + 6) % 7;
-
-                //Mostra o dia da semana dependendo do resultado da fórmula
-                if(dia_semana == 0)
-                {
-                    printf("\nEssa data é um Domingo");
-                }
-
-                else if(dia_semana == 1)
-                {
-                    printf("\nEssa data é uma Segunda - feira");
-                }
-
-                else if(dia_semana == 2)
-                {
-                    printf("\nEssa data é uma Terça - feira\n");
-                }
-
-                else if(dia_semana == 3)
-                {
-                    printf("\nEssa data é uma Quarta - feira\n");
-                }
-
-                else if(dia_semana == 4)
-                {
-                    printf("\nEssa data é uma Quinta - feira\n");
-                }
-
-                else if(dia_semana == 5)
-                {
-                    printf("\nEssa data é uma Sexta - feira\n");
-                }
-
-                else if(dia_semana == 6)
-                {
-                    printf("\nEssa data é um Sábado\n");
-                }
-
-                //Solicita o horário da vissita
-                printf("\n-----Digite o horário que deseja agendar a visita (H:Min)------- ");
-                //Solicita a hora da visita
-                printf("\nDigite a hora: ");
-                scanf("\n%d", &hora);
-                //Solicita o minuto da visita
-                printf("\nDigite o minuto: ");
-                scanf("\n%d", &min);
-                //Mostra o horário da visita que foi digitado
-                printf("\n------%.2d:%.2d-----", hora, min);
-
-                //Não valida o horário  se estiver fora do intervalo (Sujeito a mudanças)
-                while(hora < 10 || hora > 18)
-                {
-                    printf("\nHorário inválido!\n");
-                    printf("\nDigite a hora novamente: ");
-                    scanf("\n%d", &hora);
-                    printf("\nDigite o minuto novamente: ");
-                    scanf("\n%d", &min);
-                }
-
-                // Mostra o calendário com o dia da visita agendada (Incompleto)
-                printf("\nCalendário com o dia da visita agendada:\n");
-                printf("=============================================\n");
-                //void destacarDiasSelecionados(mes, ano, dia, dia_semana);
-
-                //Solicita a confirmação da data e horário digitados
-                printf("\nConfirma essa data e horário? (S/N)");
-                scanf("%s", &opcao);
-                if (opcao == 'S' || opcao == 's')
-                {
-                    printf("\nAgendamento finalizado!\n");
-                }
+                   printf("\nAgendamento finalizado!\n");
+               }
                 break;
 
             case 5:
@@ -865,7 +958,6 @@ int main()
                         break;
                     }
                 }
-
                 // IMPRIMIR DADOS NA TELA DO SISTEMA (obs: impressão final será feita em txt)
                    printf("-------------CONTRATO DE LOCAÇÃO-------------\n\n");
                    printf("Pelo presente instrumento particular de contrato de locação, de um lado denominado LOCADOR, Chácara Recanto dos Sonhos, com sede na Rua Dois, número 1071, Jardim Itaguaçu 2, Campinas, Estado de São Paulo, CEP 13053-788, Brasil, doravante denominado simplesmente LOCADOR, e de outro lado, denominado LOCATÁRIO, %s , telefone (%i)%i, doravante denominado simplesmente LOCATÁRIO.\n\n", nomeCliente, dddTelefone, telefoneCliente);
