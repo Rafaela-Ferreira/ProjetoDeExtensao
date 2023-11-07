@@ -3,71 +3,113 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <sys/stat.h> // Inclui a biblioteca necessária para usar mkdir
 
 // *** INICIO DAS FUNÇÕES DA KEZIA ***
 // Função para fazer o cadastro de clientes 
-typedef struct
-{
-    char cliente_nome[100];
-    char tel[20];
-    char endereco_chacara[100];
-    int numero_contrato;
-    char data_contrato[20];
-    float valor_locacao;
-    int taxa_limpeza;
-    float taxa_quebra;
-    char assinatura[100];
-}Contrato;
+typedef struct {
+    char nome_cliente[100];
+    char telefone_cliente[30];
+    char cpf_cliente[20];
+    char email_cliente[50];
+    char endereco_cliente[100];
+} CadastroCliente;
 
-// ---------------- FUNÇÃO PARA CADASTRAR CLIENTES ------------------
-void criarContrato(Contrato *contrato)
-{
+typedef struct {
+    char endereco_chacara[100];
+    char telefone_chacara[20];
+    float valor_locacao;
+    char data_contrato[20];
+    int numero_contrato;
+    char assinatura[100];
+} Contrato;
+
+int contadorContrato = 1;
+
+void criarCadastro(CadastroCliente *cliente, Contrato *contrato) {
     setbuf(stdin, NULL);
+
     printf("Nome do cliente: ");
-    fgets(contrato->cliente_nome, sizeof(contrato->cliente_nome), stdin);
-    strtok(contrato->cliente_nome, "\n");
+    fgets(cliente->nome_cliente, sizeof(cliente->nome_cliente), stdin);
+    strtok(cliente->nome_cliente, "\n");
 
     printf("Telefone: ");
-    scanf("%19s[^\n]", &contrato->tel);
-    getchar(); // Captura o caractere de nova linha
-    setbuf(stdin, NULL);
+    fgets(cliente->telefone_cliente, sizeof(cliente->telefone_cliente), stdin);
+    strtok(cliente->telefone_cliente, "\n");
+
+    printf("CPF do cliente: ");
+    fgets(cliente->cpf_cliente, sizeof(cliente->cpf_cliente), stdin);
+    strtok(cliente->cpf_cliente, "\n");
+
+    printf("Endereço do cliente: ");
+    fgets(cliente->endereco_cliente, sizeof(cliente->endereco_cliente), stdin);
+    strtok(cliente->endereco_cliente, "\n");
+
+    printf("Email do cliente: ");
+    fgets(cliente->email_cliente, sizeof(cliente->email_cliente), stdin);
+    strtok(cliente->email_cliente, "\n");
 
     printf("Endereço da chácara: ");
     fgets(contrato->endereco_chacara, sizeof(contrato->endereco_chacara), stdin);
     strtok(contrato->endereco_chacara, "\n");
-    setbuf(stdin, NULL);
 
-    printf("\n ");
-    printf("\t\tAssinatura Eletrônica: ");
+    contrato->numero_contrato = contadorContrato;
+    contadorContrato++;
+
+    printf("Data do contrato: ");
+    fgets(contrato->data_contrato, sizeof(contrato->data_contrato), stdin);
+    strtok(contrato->data_contrato, "\n");
+
+    printf("Valor da locação: ");
+    scanf("%f", &contrato->valor_locacao);
+
+    setbuf(stdin, NULL); // Limpa o buffer de entrada
+
+    printf("\t\tAssinatura: ");
     fgets(contrato->assinatura, sizeof(contrato->assinatura), stdin);
     strtok(contrato->assinatura, "\n");
-    printf("\t-------------------------------------------------------------------"
-           "--");
-    setbuf(stdin, NULL);
 }
 
- // ------------ FUNÇÃO PARA SALVAR O CADASTRO DE CLIENTES -----------------
-void salvarContrato(Contrato *contrato)
-{
-    FILE *arquivo = fopen("contrato_chacara.doc", "w");
-    if (arquivo == NULL)
-    {
+void salvarCadastro(CadastroCliente *cliente, Contrato *contrato) {
+    char pastaNome[100] = "Contratos";
+    
+    // Nome da pasta onde você deseja salvar os arquivos
+    #ifdef _WIN32
+        mkdir(pastaNome);
+    #else
+        mkdir(pastaNome, 0755); // Cria a pasta (diretório) se ela não existir
+    #endif
+
+    char nomeArquivo[100];
+    sprintf(nomeArquivo, "%s/contrato_%s.txt", pastaNome, cliente->cpf_cliente);
+
+    FILE *arquivo = fopen(nomeArquivo, "w");
+    if (arquivo == NULL) {
         printf("Erro ao abrir o arquivo!\n");
         return;
     }
+
     fprintf(arquivo, "\t\t\t\t\tRECANTO DOS SONHOS\n");
-    fprintf(arquivo, "<----------------------------------------------------------"
-            "-------------------->\n");
+    fprintf(arquivo, "<------------------------------------------------------------------------------>\n");
     fprintf(arquivo, "\n");
-    fprintf(arquivo, "Cadastro de Cliente\n");
-    fprintf(arquivo, "Cliente: %s\n", contrato->cliente_nome);
-    fprintf(arquivo, "Telefone: %s\n", contrato->tel);
+    fprintf(arquivo, "Contrato de Locação de Chácara\n");
+    fprintf(arquivo, "Cliente: %s\n", cliente->nome_cliente);
+    fprintf(arquivo, "Telefone: %s\n", cliente->telefone_cliente);
+    fprintf(arquivo, "CPF: %s\n", cliente->cpf_cliente);
+    fprintf(arquivo, "Endereço do cliente: %s\n", cliente->endereco_cliente);
+    fprintf(arquivo, "Email do cliente: %s\n", cliente->email_cliente);
     fprintf(arquivo, "Endereço da Chácara: %s\n", contrato->endereco_chacara);
-    fprintf(arquivo, "\t\tassinatura: %s\n", contrato->assinatura);
+    fprintf(arquivo, "Número do Contrato: %d\n", contrato->numero_contrato);
+    fprintf(arquivo, "Data do Contrato: %s\n", contrato->data_contrato);
+    fprintf(arquivo, "Valor da Locação: R$%.2f\n", contrato->valor_locacao);
+    fprintf(arquivo, "\t\tAssinatura: %s\n", contrato->assinatura);
     fprintf(arquivo, "------------------------------------------------------\n");
+
     fclose(arquivo);
-    printf("\n\nCadastro gerado com sucesso e salvo em 'contrato_chacara.doc'.\n");
+    printf("\n\nContrato gerado com sucesso e salvo em '%s'.\n", nomeArquivo);
 }
+
+
 // *** FIM DAS FUNÇÕES DA KEZIA ***
 
 // *** INICIO DAS FUNÇÕES DA RAFAELA ***
@@ -679,11 +721,13 @@ int main()
                 printf("\n\033[1mVOCÊ SELECIONOU CADASTRO DE CLIENTES.\033[0m\n");
                 // Coloque a lógica do cadastro de clientes aqui
                 printf("\n--------------------------------");
-                printf("RECANTOS DOS SONHOS");
+                printf("RECANTO DOS SONHOS");
                 printf("-------------------------------------------\n");
-                Contrato contrato;
-                criarContrato(&contrato);
-                salvarContrato(&contrato);
+
+                CadastroCliente cliente1;
+                Contrato contrato1;
+                criarCadastro(&cliente1, &contrato1);
+                salvarCadastro(&cliente1, &contrato1);
 
                 break;
 
