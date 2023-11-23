@@ -140,7 +140,7 @@ void destacarDiasSelecionados(int mes, int ano, int diasAgendados[], int numDias
     int diasNoMes[] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
     printf("\nCalend�rio para %s de %d\n", nomesDosMeses[mes], ano);
-    printf("Dom\tSeg\tTer\tQua\tQui\tSex\tS�b\n");
+    printf("\033[1;31mDom\tSeg\tTer\tQua\tQui\tSex\tSáb\n\033[0m");
 
     int primeiroDiaDoMes = calcularDiaSemana(ano, mes, 1);
 
@@ -167,11 +167,11 @@ void destacarDiasSelecionados(int mes, int ano, int diasAgendados[], int numDias
         {
             if (agendado)
             {
-                printf("\033[1;34m%2d\033[0m\t", dia); // Domingo com destaque azul
+                printf("\033[1;94m%2d\033[0m\t", dia); // Domingo com destaque azul
             }
             else
             {
-                printf("\033[1;91m%2d\033[0m\t", dia); // Domingo com destaque vermelho
+                printf("\033[1;31m%2d\033[0m\t", dia); // Domingo com destaque vermelho
             }
         }
         else if (diaDaSemana == 6)
@@ -212,8 +212,102 @@ int verificarAno(int ano)
     return 1;
 }
 // ---------------- FUN��O PARA SOLICITAR AO USU�RIO OS DIAS A SEREM AGENDADOS E DESTACALOS NO CALEND�RIO ------------------
-void agendarNoCalendario()
-{
+// Defina o tamanho inicial do vetor para armazenar as datas agendadas
+#define TAMANHO_INICIAL 10
+#define ARQUIVO_DATAS "datas_agendadas.txt"
+
+
+
+int verificarMes(int mes) {
+    return (mes >= 1 && mes <= 12);
+}
+
+int verificarDia(int dia, int mes, int ano, int ano_atual, int mes_atual, int dia_atual) {
+    if (dia < 1 || dia > 31) {
+        return 0;  // Dia inválido
+    }
+
+    if ((ano == ano_atual && mes == mes_atual && dia <= dia_atual) || (ano == ano_atual && mes < mes_atual)) {
+      printf("\n\033[1;31mNão é possível agendar para uma data que já passou ou é o dia de hoje.\033[0m\n");
+        return 0;  // Data inválida
+    }
+
+    return 1;  // Data válida
+}
+
+
+
+void salvarDatas(int *diasAgendados, int numDiasAgendados) {
+    FILE *arquivo = fopen(ARQUIVO_DATAS, "w");
+    if (arquivo == NULL) {
+        printf("\n\033[1;31mErro ao abrir o arquivo para salvar datas.\033[0m\n");
+        exit(EXIT_FAILURE);
+    }
+
+    fprintf(arquivo, "%d\n", numDiasAgendados);
+
+    for (int i = 0; i < numDiasAgendados; i++) {
+        fprintf(arquivo, "%d\n", diasAgendados[i]);
+    }
+
+    fclose(arquivo);
+}
+
+void carregarDatas(int **diasAgendados, int *numDiasAgendados, int *capacidadeAtual) {
+    FILE *arquivo = fopen(ARQUIVO_DATAS, "r");
+    if (arquivo == NULL) {
+        printf("\n\n\033[1;31mArquivo de datas não encontrado. Criando um novo.\033[0m\n");
+        return;
+    }
+
+    fscanf(arquivo, "%d", numDiasAgendados);
+
+    if (*numDiasAgendados > *capacidadeAtual) {
+        *capacidadeAtual = *numDiasAgendados;
+        *diasAgendados = realloc(*diasAgendados, *capacidadeAtual * sizeof(int));
+        if (*diasAgendados == NULL) {
+            printf("\033[1;31mErro ao alocar memória.\033[0m\n");
+            exit(EXIT_FAILURE);
+        }
+    }
+
+    for (int i = 0; i < *numDiasAgendados; i++) {
+        fscanf(arquivo, "%d", &((*diasAgendados)[i]));
+    }
+
+    fclose(arquivo);
+}
+
+void adicionarDias(int **diasAgendados, int *numDiasAgendados, int *capacidadeAtual, int dias) {
+    // Redimensiona o vetor se necessário
+    if (*numDiasAgendados + dias > *capacidadeAtual) {
+        *capacidadeAtual = *numDiasAgendados + dias;
+        *diasAgendados = realloc(*diasAgendados, *capacidadeAtual * sizeof(int));
+        if (*diasAgendados == NULL) {
+            printf("\033[1;31mErro ao alocar memória.\033[0m\n");
+            exit(EXIT_FAILURE);
+        }
+    }
+
+    for (int i = 0; i < dias; i++) {
+        while (1) {
+            printf("Digite o dia a ser agendado (entre 1 e 31): ");
+            scanf("%d", &(*diasAgendados)[*numDiasAgendados]);
+
+            if (verificarDia((*diasAgendados)[*numDiasAgendados], 0, 0, 0, 0, 0)) {
+                (*numDiasAgendados)++;
+                break;
+            } else {
+              printf("\033[1;31m\nDia inválido ou data já passou ou é o dia de hoje.\033[0m\n");
+            }
+        }
+    }
+
+    // Salva as datas após adicionar os novos dias
+    salvarDatas(*diasAgendados, *numDiasAgendados);
+}
+
+void agendarNoCalendario() {
     time_t now;
     struct tm *local;
     time(&now);
@@ -221,58 +315,73 @@ void agendarNoCalendario()
     int ano_atual = local->tm_year + 1900;
     int mes_atual = local->tm_mon + 1;
     int dia_atual = local->tm_mday;
-    int mes, dia, ano;
+    int mes, ano;
 
-    while (1)
-    {
-        printf("Digite o ano (entre 2023 e 2100): ");
-        scanf("%d", &ano);
+    int dataValida = 0;
 
-        if (verificarAno(ano))
-        {
-            break;
+    while (!dataValida) {
+        while (1) {
+            printf("Digite o ano (entre 2023 e 2100): ");
+            scanf("%d", &ano);
+
+            if (verificarAno(ano)) {
+                break;
+            }
         }
-    }
 
-    while (1)
-    {
-        printf("Digite o m�s (entre 1 e 12): ");
-        scanf("%d", &mes);
+        while (1) {
+            printf("Digite o mês (entre 1 e 12): ");
+            scanf("%d", &mes);
 
-        if (mes < 1 || mes > 12)
-        {
-            printf("M�s inv�lido.\n");
+            if (verificarMes(mes)) {
+                break;
+            } else {
+                printf("Mês inválido.\n");
+            }
         }
-        else
-        {
-            break;
-        }
+
+        dataValida = 1;
     }
 
-    // Solicita ao usu�rio os dias a serem agendados
-    printf("Quantos dias voc� deseja agendar? ");
-    int numDias;
-    scanf("%d", &numDias);
-
-    int diasAgendados[numDias];
-    for (int i = 0; i < numDias; i++)
-    {
-        printf("Digite o dia a ser agendado (entre 1 e 31): ");
-        scanf("%d", &diasAgendados[i]);
+    int *diasAgendados = malloc(TAMANHO_INICIAL * sizeof(int));
+    if (!diasAgendados) {
+        printf("\033[1;31mErro ao alocar memória.\033[0m\n");
+        exit(EXIT_FAILURE);
     }
 
-    // Verifica��o para garantir que o usu�rio n�o agende em datas passadas
-    if (ano == ano_atual && mes < mes_atual)
-    {
-        printf("N�o � poss�vel agendar para uma data que j� passou.\n");
-        return;
+    int capacidadeAtual = TAMANHO_INICIAL;
+    int numDiasAgendados = 0;
+
+    carregarDatas(&diasAgendados, &numDiasAgendados, &capacidadeAtual);
+
+    printf("\033[1m\nCalendário com dias agendados:\n");
+    printf("=============================================\n\033[0m");
+    destacarDiasSelecionados(mes, ano, diasAgendados, numDiasAgendados);
+
+    // Adicionar mais dias
+    printf("\nDeseja adicionar mais dias ao calendário? (1 - Sim / 0 - Não): ");
+    int opcao;
+    scanf("%d", &opcao);
+
+    while (opcao == 1) {
+        printf("Quantos dias você deseja adicionar? ");
+        int numDias;
+        scanf("%d", &numDias);
+
+        adicionarDias(&diasAgendados, &numDiasAgendados, &capacidadeAtual, numDias);
+
+        printf("\033[1m\nCalendário com dias agendados:\n");
+        printf("=============================================\n\033[0m");
+        destacarDiasSelecionados(mes, ano, diasAgendados, numDiasAgendados);
+
+        printf("\nDeseja adicionar mais dias ao calendário? (1 - Sim / 0 - Não): ");
+        scanf("%d", &opcao);
     }
 
-    // Mostra o calend�rio com os dias agendados em azul
-    printf("\nCalend�rio com dias agendados:\n");
-    printf("=============================================\n");
-    destacarDiasSelecionados(mes, ano, diasAgendados, numDias);
+    // Libera a memória alocada para o vetor
+    free(diasAgendados);
 }
+
 //----------------  FUN��O PARA EXIBIR O CALEND�RIO ------------------
 void calendario()
 {
@@ -320,7 +429,7 @@ void calendario()
                             };
 
     printf("\nCalend�rio para %s de %d\n", nomesDosMeses[mes], ano);
-    printf("Dom\tSeg\tTer\tQua\tQui\tSex\tS�b\n");
+    printf("\033[1;31mDom\tSeg\tTer\tQua\tQui\tSex\tSáb\n\033[0m");
 
     int primeiroDiaDoMes = calcularDiaSemana(ano, mes, 1);
 
@@ -962,7 +1071,6 @@ int main()
                 visualizarChacarasDisponiveis();
                 printf("\nEscolha a data do evento!\n\n");
                 agendarNoCalendario();
-                printf("\033[1;32mData agendada com sucesso!\033[0m");
                 printf("\n\n");
 
                 system("pause");
