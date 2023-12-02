@@ -3,32 +3,36 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include <sys/stat.h> // Inclui a biblioteca necess�ria para usar mkdir
+#include <sys/stat.h> // Inclui a biblioteca necessária para usar mkdir
 
+// VARIAVEL GLOBAL
+#define MAX_NOME 50
+#define MAX_CARACTERISTICAS 9
+#define MAX_CHACARAS 10
 
-// *** INICIO DAS FUN��ES DA KEZIA ***
-// Fun��o para fazer o cadastro de clientes
+// INÍCIO FUNÇÕES (1)
+
+// ----- ESTRUTURA: CADASTRO DE CLIENTE -----
 typedef struct
 {
     char nome_cliente[100];
     char telefone_cliente[30];
-    char cpf_cliente[11];
+    char cpf_cliente[12];
     char email_cliente[50];
     char endereco_cliente[100];
 } CadastroCliente;
 
+// ----- ESTRUTURA: SALVAR CADASTRO DE CLIENTE -----
 typedef struct
 {
     char endereco_chacara[100];
-    char telefone_chacara[20];
+    char telefone_chacara;
     float valor_locacao;
-    char data_contrato[20];
-    int numero_contrato;
     char assinatura[100];
+
 } Contrato;
 
-int contadorContrato = 1;
-
+// ----- FUNÇÃO 1: CRIAR CADASTRO DE CLIENTES -----
 void criarCadastro(CadastroCliente *cliente, Contrato *contrato)
 {
     setbuf(stdin, NULL);
@@ -37,89 +41,68 @@ void criarCadastro(CadastroCliente *cliente, Contrato *contrato)
     fgets(cliente->nome_cliente, sizeof(cliente->nome_cliente), stdin);
     strtok(cliente->nome_cliente, "\n");
 
-
-    // Verifica se o nome s� tem letras.
     for (int i = 0; cliente->nome_cliente[i]; i++)
     {
-        if (((cliente->nome_cliente[i] >= 'A' && cliente->nome_cliente[i] <= 'Z') ||
-            (cliente->nome_cliente[i] >= 'a' && cliente->nome_cliente[i] <= 'z') ||
-            cliente->nome_cliente[i] == ' '))
+        if (!isalpha(cliente->nome_cliente[i]) && cliente->nome_cliente[i] != ' ')
         {
             printf("Nome inv�lido. Por favor, digite novamente:  \n");
             fgets(cliente->nome_cliente, sizeof(cliente->nome_cliente), stdin);
             strtok(cliente->nome_cliente, "\n");
-            i = -1;
-            continue;
+            i = -1; // Reinicia o loop
         }
     }
+
+    setbuf(stdin, NULL);
+
     printf("Telefone: ");
     fgets(cliente->telefone_cliente, sizeof(cliente->telefone_cliente), stdin);
     strtok(cliente->telefone_cliente, "\n");
 
     for (int i = 0; cliente->telefone_cliente[i]; i++)
     {
-        if (cliente->telefone_cliente[i] < '0' )   //Verifica se foram digitados n�meros de 0 a 9.
+        if (cliente->telefone_cliente[i] < '0')
         {
-            printf("Telefone INV�LIDO!! Digite novamente: ");
+            printf("Telefone inv�lido. Por favor, digite novamente:  \n");
             fgets(cliente->telefone_cliente, sizeof(cliente->telefone_cliente), stdin);
             strtok(cliente->telefone_cliente, "\n");
-            // Reinicia o loop para verificar o novo CPF
-            i = -1; // -1 porque o loop incrementa no final
-            continue;
+            i = -1; // Reinicia o loop
         }
     }
 
+    setbuf(stdin, NULL);
 
     printf("CPF do cliente: ");
     fgets(cliente->cpf_cliente, sizeof(cliente->cpf_cliente), stdin);
     strtok(cliente->cpf_cliente, "\n");
 
-    // Valida��o do CPF do Cliente.
     for (int i = 0; cliente->cpf_cliente[i]; i++)
     {
-        if (cliente->cpf_cliente[i] < '0' || cliente->cpf_cliente[i] > '9')   //Verifica se foram digitados n�meros de 0 a 9.
+        if (cliente->cpf_cliente[i] < '0' || cliente->cpf_cliente[i] > '9')
         {
             printf("CPF INV�LIDO!! Digite novamente: ");
             fgets(cliente->cpf_cliente, sizeof(cliente->cpf_cliente), stdin);
             strtok(cliente->cpf_cliente, "\n");
-            // Reinicia o loop para verificar o novo CPF
-            i = -1; // -1 porque o loop incrementa no final
+            i = -1;
             continue;
         }
     }
-    //setbuf(stdin, NULL);
-    // Verifica o tamanho total do CPF
-    //if (strlen(cliente->cpf_cliente) != 11) {
-    //printf("CPF INV�LIDO!! Digite novamente: ");
-    //fgets(cliente->cpf_cliente, sizeof(cliente->cpf_cliente), stdin);
-    //strtok(cliente->cpf_cliente, "\n");
 
     setbuf(stdin, NULL);
     printf("Endere�o do cliente: ");
     fgets(cliente->endereco_cliente, sizeof(cliente->endereco_cliente), stdin);
     strtok(cliente->endereco_cliente, "\n");
 
-    //    verifica��o do endere�o do cliente, ele n�o pode aceitar n�mero negativo.
-    for (int i = 0; cliente->endereco_cliente[i]; i++)
-    {
-        if (cliente->endereco_cliente[i] < '0' )   //Verifica se foram digitados n�meros menores que zero.
-        {
-            printf("Endere�o  INV�LIDO!! Digite novamente: ");
-            fgets(cliente->endereco_cliente, sizeof(cliente->endereco_cliente), stdin);
-            strtok(cliente->endereco_cliente, "\n");
-            i = -1;
-            continue;
-        }
-    }
     printf("Email do cliente: ");
     fgets(cliente->email_cliente, sizeof(cliente->email_cliente), stdin);
     strtok(cliente->email_cliente, "\n");
 
+    // Verifica se o email cont�m a substring "@gmail."
     for (int i = 0; cliente->email_cliente[i]; i++)
     {
-        if (cliente->email_cliente[i] < '0' )   //Verifica se foram digitados n�meros menores que zero.
+        setbuf(stdin, NULL);
+        if (strstr(cliente->email_cliente, "@gmail.") == NULL)
         {
-            printf("Gmail INV�LIDO!! Digite novamente: ");
+            printf("Email INV�LIDO!! Digite novamente: ");
             fgets(cliente->email_cliente, sizeof(cliente->email_cliente), stdin);
             strtok(cliente->email_cliente, "\n");
             i = -1;
@@ -132,57 +115,23 @@ void criarCadastro(CadastroCliente *cliente, Contrato *contrato)
     fgets(contrato->endereco_chacara, sizeof(contrato->endereco_chacara), stdin);
     strtok(contrato->endereco_chacara, "\n");
 
-    //verifica��o do endere�o da chacara, ele n�o pode aceitar n�mero negativo.
-    for (int i = 0; contrato->endereco_chacara[i]; i++)
-    {
-        if (contrato->endereco_chacara[i] < '0' )   //Verifica se foram digitados n�meros menores que zero.
-        {
-            printf("Endere�o  da ch�cara INV�LIDO!! Digite novamente: ");
-            fgets(contrato->endereco_chacara, sizeof(contrato->endereco_chacara), stdin);
-            strtok(contrato->endereco_chacara, "\n");
-            i = -1;
-            continue;
-        }
-    }
-
-    contrato->numero_contrato = contadorContrato;
-    contadorContrato++;
-
-    printf("Data do contrato: ");
-    fgets(contrato->data_contrato, sizeof(contrato->data_contrato), stdin);
-    strtok(contrato->data_contrato, "\n");
-
-    //verifica��o da data de contrato, ele n�o pode aceitar n�mero negativo.
-    for (int i = 0; contrato->data_contrato[i]; i++)
-    {
-        if (contrato->data_contrato[i] < '0' )   //Verifica se foram digitados n�meros menores que zero.
-        {
-            printf("Data do contrato INV�LIDO!! Digite novamente: ");
-            fgets(contrato->data_contrato, sizeof(contrato->data_contrato), stdin);
-            strtok(contrato->data_contrato, "\n");
-            i = -1;
-            continue;
-        }
-    }
-
     printf("Valor da loca��o: ");
     scanf("%f", &contrato->valor_locacao);
-    if (contrato->valor_locacao < '0' )   //Verifica se foi digitado n�mero menor que zero.
+    if (contrato->valor_locacao < 0)
     {
         printf("Valores negativos n�o � permitido!! Digite novamente: ");
         scanf("%f", &contrato->valor_locacao);
-
     }
 
-    setbuf(stdin, NULL); // Limpa o buffer de entrada
+    setbuf(stdin, NULL);
 
     printf("\n\t\tAssinatura: ");
     fgets(contrato->assinatura, sizeof(contrato->assinatura), stdin);
     strtok(contrato->assinatura, "\n");
 
-    for (int i = 0; contrato->data_contrato[i]; i++)
+    for (int i = 0; contrato->assinatura[i]; i++)
     {
-        if (contrato->assinatura[i] < '0' )   //Verifica se foram digitados n�meros menores que zero.
+        if (!isalpha(contrato->assinatura[i]) && !isspace(contrato->assinatura[i]))
         {
             printf("Assinatura INV�LIDA!! Digite novamente: ");
             fgets(contrato->assinatura, sizeof(contrato->assinatura), stdin);
@@ -193,17 +142,16 @@ void criarCadastro(CadastroCliente *cliente, Contrato *contrato)
     }
 }
 
-
+// ----- FUNÇÃO 2: SALVAR CADASTRO DE CLIENTES EM ARQUIVO -----
 void salvarCadastro(CadastroCliente *cliente, Contrato *contrato)
 {
     char pastaNome[100] = "Contratos";
 
-    // Nome da pasta onde voc� deseja salvar os arquivos
-    #ifdef _WIN32
-        mkdir(pastaNome);
-    #else
-        mkdir(pastaNome, 0755); // Cria a pasta (diret�rio) se ela n�o existir
-    #endif
+#ifdef _WIN32
+    mkdir(pastaNome);
+#else
+    mkdir(pastaNome, 0755);
+#endif
 
     char nomeArquivo[100];
     sprintf(nomeArquivo, "%s/contrato_%s.txt", pastaNome, cliente->cpf_cliente);
@@ -220,13 +168,11 @@ void salvarCadastro(CadastroCliente *cliente, Contrato *contrato)
     fprintf(arquivo, "\n");
     fprintf(arquivo, "Contrato de Loca��o de Ch�cara\n");
     fprintf(arquivo, "Cliente: %s\n", cliente->nome_cliente);
-    fprintf(arquivo, "Telefone: %d\n", cliente->telefone_cliente);
+    fprintf(arquivo, "Telefone: %s\n", cliente->telefone_cliente);
     fprintf(arquivo, "CPF: %s\n", cliente->cpf_cliente);
     fprintf(arquivo, "Endere�o do cliente: %s\n", cliente->endereco_cliente);
     fprintf(arquivo, "Email do cliente: %s\n", cliente->email_cliente);
     fprintf(arquivo, "Endere�o da Ch�cara: %s\n", contrato->endereco_chacara);
-    fprintf(arquivo, "N�mero do Contrato: %d\n", contrato->numero_contrato);
-    fprintf(arquivo, "Data do Contrato: %s\n", contrato->data_contrato);
     fprintf(arquivo, "Valor da Loca��o: R$%.2f\n", contrato->valor_locacao);
     fprintf(arquivo, "\n\t\tAssinatura: %s\n", contrato->assinatura);
     fprintf(arquivo, "------------------------------------------------------------------------------\n");
@@ -235,12 +181,15 @@ void salvarCadastro(CadastroCliente *cliente, Contrato *contrato)
     printf("\n\nContrato gerado com sucesso e salvo em '%s'.\n", nomeArquivo);
 }
 
-// *** FIM DAS FUNÇÕES DA KEZIA ***
+// *** FIM DAS FUNÇÕES (1) ***
 
-// *** INICIO DAS FUNÇÕES DA RAFAELA ***
+// *** INICIO DAS FUNÇÕES (2) ***
 
-int calcularDiaSemana(int ano, int mes, int dia) {
-    if (mes < 3) {
+// ----- FUNÇÃO 3: CALCULAR DIA DA SEMANA -----
+int calcularDiaSemana(int ano, int mes, int dia)
+{
+    if (mes < 3)
+    {
         mes += 12;
         ano--;
     }
@@ -252,32 +201,45 @@ int calcularDiaSemana(int ano, int mes, int dia) {
     return diaDaSemana;
 }
 
-void marcarDatasNoCalendario(int ano, int mes, int *diasMarcados, int totalDias) {
+// ----- FUNÇÃO 4: MARCAR DATAS NO CALENDÁRIO -----
+void marcarDatasNoCalendario(int ano, int mes, int *diasMarcados, int totalDias)
+{
     int diasNoMes[] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-    if (ano % 4 == 0 && (ano % 100 != 0 || ano % 400 == 0)) {
+    if (ano % 4 == 0 && (ano % 100 != 0 || ano % 400 == 0))
+    {
         diasNoMes[2] = 29; // Fevereiro tem 29 dias em um ano bissexto
     }
 
     int primeiroDiaDoMes = calcularDiaSemana(ano, mes, 1);
 
-    for (int i = 0; i < primeiroDiaDoMes; i++) {
+    for (int i = 0; i < primeiroDiaDoMes; i++)
+    {
         printf("\t");
     }
 
-    for (int dia = 1; dia <= diasNoMes[mes]; dia++) {
+    for (int dia = 1; dia <= diasNoMes[mes]; dia++)
+    {
         int diaDaSemana = calcularDiaSemana(ano, mes, dia);
 
-        if (diasMarcados[dia]) {
+        if (diasMarcados[dia])
+        {
             printf("\033[1;34m%2d\033[0m\t", dia); // Imprime o dia marcado em azul
-        } else if (diaDaSemana == 0) {
+        }
+        else if (diaDaSemana == 0)
+        {
             printf("\033[1;31m%2d\033[0m\t", dia); // Imprime domingo em vermelho
-        } else if (diaDaSemana == 6) {
+        }
+        else if (diaDaSemana == 6)
+        {
             printf("\033[1;90m%2d\033[0m\t", dia); // Imprime sábado em cinza
-        } else {
+        }
+        else
+        {
             printf("%2d\t", dia);
         }
 
-        if ((primeiroDiaDoMes + dia) % 7 == 0 || dia == diasNoMes[mes]) {
+        if ((primeiroDiaDoMes + dia) % 7 == 0 || dia == diasNoMes[mes])
+        {
             printf("\n");
         }
     }
@@ -285,23 +247,31 @@ void marcarDatasNoCalendario(int ano, int mes, int *diasMarcados, int totalDias)
     printf("\n");
 }
 
-void agendarDiarias() {
+// ----- FUNÇÃO 5: AGENDAR DIÁRIAS -----
+void agendarDiarias()
+{
     int ano, mes, qtdDias;
 
-    while (1) {
-        printf("Digite o \033[1mANO\033[0m e o \033[1mMÊS\033[0m (no formato \033[1mAAAA MM\033[0m) e a \033[1mQUANTIDADE\033[0m de dias para agendar\n");
-        printf("Ou use o formato \033[1mAAAA MM 0\033[0m para exibir o calendário:\n");
+    while (1)
+    {
+        printf("Digite o \033[1mANO\033[0m o \033[1mMÊS\033[0m (no formato \033[1mAAAA MM\033[0m) e a \033[1mQUANTIDADE\033[0m de dias para agendar\n");
+        printf("Ou use o formato \033[1mAAAA MM ZERO\033[0m para exibir o calendário:\n");
 
         scanf("%d", &ano);
-        if (ano == 0) {
+        if (ano == 0)
+        {
             break;
         }
 
-        while (1) {
+        while (1)
+        {
             scanf("%d", &mes);
-            if (mes >= 1 && mes <= 12) {
+            if (mes >= 1 && mes <= 12)
+            {
                 break;
-            } else {
+            }
+            else
+            {
                 printf("\033[1;31mMÊS INVÁLIDO. POR FAVOR, DIGITE UM VALOR ENTRE 1 E 12.\033[0m\n");
             }
         }
@@ -309,14 +279,15 @@ void agendarDiarias() {
         scanf("%d", &qtdDias);
 
         char *nomesDosMeses[] = {"", "Janeiro", "Fevereiro", "Março",
-                                "Abril", "Maio", "Junho", "Julho",
-                                "Agosto", "Setembro", "Outubro", "Novembro",
-                                "Dezembro"};
+                                 "Abril", "Maio", "Junho", "Julho",
+                                 "Agosto", "Setembro", "Outubro", "Novembro",
+                                 "Dezembro"};
 
         printf("\nCalendário para %s de %d\n", nomesDosMeses[mes], ano);
 
         FILE *arquivo = fopen("datas.txt", "a+");
-        if (arquivo == NULL) {
+        if (arquivo == NULL)
+        {
             printf("\033[1;31mERRO AO ABRIR O ARQUIVO.\033[0m\n");
             exit(EXIT_FAILURE);
         }
@@ -328,8 +299,10 @@ void agendarDiarias() {
 
         int diaLido, mesLido, anoLido, totalDias = 0;
 
-        while (fscanf(arquivo, "%d/%d/%d", &diaLido, &mesLido, &anoLido) == 3) {
-            if (mesLido == mes && anoLido == ano) {
+        while (fscanf(arquivo, "%d/%d/%d", &diaLido, &mesLido, &anoLido) == 3)
+        {
+            if (mesLido == mes && anoLido == ano)
+            {
                 diasMarcados[diaLido] = 1;
                 totalDias++;
             }
@@ -340,17 +313,21 @@ void agendarDiarias() {
         marcarDatasNoCalendario(ano, mes, diasMarcados, totalDias);
 
         // Solicitar as datas para agendamento
-        if (qtdDias > 0) {
+        if (qtdDias > 0)
+        {
             int dataAgendadaNoFuturo = 0;
 
-            for (int i = 0; i < qtdDias; i++) {
+            for (int i = 0; i < qtdDias; i++)
+            {
                 int diaAgendado;
 
-                do {
+                do
+                {
                     printf("Digite o %d° dia para agendar (0 para sair): ", i + 1);
                     scanf("%d", &diaAgendado);
 
-                    if (diaAgendado == 0) {
+                    if (diaAgendado == 0)
+                    {
                         break;
                     }
 
@@ -360,16 +337,19 @@ void agendarDiarias() {
                         diasNoMes[2] = 29; // Fevereiro tem 29 dias em um ano bissexto
                     }
 
-
                     int diasNoMesAtual = diasNoMes[mes];
-                    if (diaAgendado < 1 || diaAgendado > diasNoMesAtual || diasMarcados[diaAgendado] == 1) {
+                    if (diaAgendado < 1 || diaAgendado > diasNoMesAtual || diasMarcados[diaAgendado] == 1)
+                    {
                         printf("\033[1;31mDIA INVÁLIDO OU JÁ ESCOLHIDO. DIGITE UM VALOR ENTRE 1 E %d QUE NÃO TENHA SIDO ESCOLHIDO.\033[0m\n\n", diasNoMesAtual);
-                    } else {
+                    }
+                    else
+                    {
                         break;
                     }
                 } while (1);
 
-                if (diaAgendado == 0) {
+                if (diaAgendado == 0)
+                {
                     break;
                 }
 
@@ -378,7 +358,8 @@ void agendarDiarias() {
 
                 if ((ano < dataAtual->tm_year + 1900) ||
                     (ano == dataAtual->tm_year + 1900 && mes < dataAtual->tm_mon + 1) ||
-                    (ano == dataAtual->tm_year + 1900 && mes == dataAtual->tm_mon && diaAgendado <= dataAtual->tm_mday)) {
+                    (ano == dataAtual->tm_year + 1900 && mes == dataAtual->tm_mon + 1 && diaAgendado <= dataAtual->tm_mday))
+                {
                     printf("\033[1;31mNÃO É POSSÍVEL AGENDAR UMA DATA QUE JÁ PASSOU OU É HOJE.\033[0m\n\n");
                     i--;
                     continue;
@@ -395,9 +376,12 @@ void agendarDiarias() {
 
             free(diasMarcados);
 
-            if (dataAgendadaNoFuturo) {
+            if (dataAgendadaNoFuturo)
+            {
                 printf("\033[1;32mData(s) agendada(s) com sucesso!\033[0m\n");
-            } else {
+            }
+            else
+            {
                 printf("\033[1;31mNenhuma data agendada ou todas estão no passado.\033[0m\n");
             }
         }
@@ -405,22 +389,28 @@ void agendarDiarias() {
         printf("\nDeseja agendar uma nova data? (1 - Sim, 0 - Não): ");
         int opcao;
 
-        while (1) {
-            if (scanf("%d", &opcao) != 1 || (opcao != 0 && opcao != 1)) {
-                while (getchar() != '\n');
+        while (1)
+        {
+            if (scanf("%d", &opcao) != 1 || (opcao != 0 && opcao != 1))
+            {
+                while (getchar() != '\n')
+                    ;
                 printf("\n\033[1;31mOpção inválida.\033[0m Digite 0 para Não ou 1 para Sim: ");
-            } else {
+            }
+            else
+            {
                 break;
             }
         }
 
-        if (opcao == 0) {
+        if (opcao == 0)
+        {
             break;
         }
     }
 }
 
-//----------------  FUNÇÃO PARA EXIBIR O CALENDÁRIO ------------------
+//----- FUNÇÃO 6: CALENDÁRIO -----
 void calendario()
 {
     int ano, mes;
@@ -432,7 +422,9 @@ void calendario()
         if (ano >= 2000 && ano <= 2100)
         {
             break; // Sai do loop se o ano for válido.
-        }else{
+        }
+        else
+        {
             printf("Ano inválido.\n");
         }
     }
@@ -445,7 +437,9 @@ void calendario()
         if (mes >= 1 && mes <= 12)
         {
             break; // Sai do loop se o Mês for válido.
-        }else{
+        }
+        else
+        {
             printf("Mês inválido.\n");
         }
     }
@@ -456,11 +450,10 @@ void calendario()
         diasNoMes[2] = 29; // Fevereiro tem 29 dias em um ano bissexto
     }
 
-    char *nomesDosMeses[] = {"",        "Janeiro",  "Fevereiro", "Março",
-                             "Abril",   "Maio",     "Junho",     "Julho",
-                             "Agosto",  "Setembro", "Outubro",   "Novembro",
-                             "Dezembro"
-                            };
+    char *nomesDosMeses[] = {"", "Janeiro", "Fevereiro", "Março",
+                             "Abril", "Maio", "Junho", "Julho",
+                             "Agosto", "Setembro", "Outubro", "Novembro",
+                             "Dezembro"};
 
     printf("\nCalendário para %s de %d\n", nomesDosMeses[mes], ano);
     printf("\033[1;31mDOM\tSEG\tTER\tQUA\tQUI\tSEX\tSÁB\n\033[0m");
@@ -492,13 +485,20 @@ void calendario()
         }
         int diaDaSemana = calcularDiaSemana(ano, mes, dia);
 
-        if (realcado){
+        if (realcado)
+        {
             printf("\033[1;34m%2d\033[0m\t", dia); // Imprime o dia realçado em azul
-        }else if (diaDaSemana == 0){
+        }
+        else if (diaDaSemana == 0)
+        {
             printf("\033[1;31m%2d\033[0m\t", dia); // Imprime domingo em vermelho
-        }else if (diaDaSemana == 6){
+        }
+        else if (diaDaSemana == 6)
+        {
             printf("\033[1;90m%2d\033[0m\t", dia); // Imprime sábado em cinza
-        }else{
+        }
+        else
+        {
             printf("%2d\t", dia);
         }
 
@@ -510,19 +510,16 @@ void calendario()
     printf("\n");
 }
 
-// -------- FUNÇÃO CADASTRO DE CHÁCARAS - VARIÁVEIS GLOBAIS ---------
-#define MAX_NOME 50
-#define MAX_CARACTERISTICAS 9
-#define MAX_CHACARAS 10
+// -------- CADASTRO DE CHÁCARAS ---------
 
-// Definição da estrutura Chacara
+// ----- ESTRUTURA: CHÁCARA -----
 typedef struct Chacara
 {
     char caracteristicas[MAX_CARACTERISTICAS][MAX_NOME];
     char nome[MAX_NOME];
 } Chacara;
 
-// Função para preencher os dados da chácara
+// ----- FUNÇÃO 7: PREENCHER OS DADOS DA CHÁCARA -----
 void preencherChacara(Chacara *chacara, char nome[MAX_NOME], char caracteristicas[MAX_CARACTERISTICAS][MAX_NOME])
 {
     for (int i = 0; i < MAX_CARACTERISTICAS; i++)
@@ -532,7 +529,7 @@ void preencherChacara(Chacara *chacara, char nome[MAX_NOME], char caracteristica
     strcpy(chacara->nome, nome);
 }
 
-// Função para exibir todos os atributos da chácara
+// ----- FUNÇÃO 8: EXIBIR TODOS ATRIBUTOS DA CHÁCARA -----
 void exibirChacara(Chacara ch)
 {
     printf("\033[1;34m%s\033[0m\n", ch.nome); // Nome em azul e negrito
@@ -543,7 +540,7 @@ void exibirChacara(Chacara ch)
     }
 }
 
-// Função para exibir apenas o nome das chácaras disponíveis
+// ----- FUNÇÃO 9: EXIBIR APENAS O NOME DAS CHÁCARAS DISPONÍVEIS -----
 void exibirNomesChacarasDisponiveis(Chacara ch[], int n)
 {
     printf("Chácaras Disponíveis:\n");
@@ -553,7 +550,7 @@ void exibirNomesChacarasDisponiveis(Chacara ch[], int n)
     }
 }
 
-// Função para cadastrar novas chácaras
+// ----- FUNÇÃO 10: CADASTRAR NOVAS CHÁCARAS -----
 void cadastrarChacaras(Chacara ch[], int n)
 {
     for (int i = 0; i < n; i++)
@@ -583,49 +580,46 @@ void cadastrarChacaras(Chacara ch[], int n)
         ch[i] = novaChacara;
     }
 }
-// Fun��o para visualizar chácaras disponíveis e permitir que o usuário escolha uma
+// ----- FUNÇÃO 11: VISUALIZAR CHÁCARAS DISPONÍVEIS E PERMITIR QUE O USUÁRIO ESCOLHA -----
 Chacara visualizarChacarasDisponiveis()
 {
     Chacara chacarasDisponiveis[3];
 
     const char *caracteristicas1[9] =
-    {
-        "250m²",
-        "Estacionamento para até 10 carros",
-        "Contém Churrasqueira",
-        "Freezer",
-        "2 fogões",
-        "Wi-fi",
-        "3 Quartos",
-        "Geladeira",
-        "Limpeza inclusa"
-    };
+        {
+            "250m²",
+            "Estacionamento para até 10 carros",
+            "Contém Churrasqueira",
+            "Freezer",
+            "2 fogões",
+            "Wi-fi",
+            "3 Quartos",
+            "Geladeira",
+            "Limpeza inclusa"};
 
     const char *caracteristicas2[9] =
-    {
-        "150m²",
-        "Estacionamento para até 5 carros",
-        "Sem Churrasqueira",
-        "1 fogão",
-        "Sem Freezer",
-        "Sem Wi-fi",
-        "1 Quarto",
-        "Geladeira",
-        "Limpeza não inclusa"
-    };
+        {
+            "150m²",
+            "Estacionamento para até 5 carros",
+            "Sem Churrasqueira",
+            "1 fogão",
+            "Sem Freezer",
+            "Sem Wi-fi",
+            "1 Quarto",
+            "Geladeira",
+            "Limpeza não inclusa"};
 
     const char *caracteristicas3[9] =
-    {
-        "200m²",
-        "Estacionamento para até 8 carros",
-        "Contém Churrasqueira",
-        "Freezer",
-        "2 fogões",
-        "Wi-fi",
-        "2 Quartos",
-        "Geladeira",
-        "Limpeza inclusa"
-    };
+        {
+            "200m²",
+            "Estacionamento para até 8 carros",
+            "Contém Churrasqueira",
+            "Freezer",
+            "2 fogões",
+            "Wi-fi",
+            "2 Quartos",
+            "Geladeira",
+            "Limpeza inclusa"};
 
     preencherChacara(&chacarasDisponiveis[0], "RECANTO DOS SONHOS", caracteristicas1);
     preencherChacara(&chacarasDisponiveis[1], "CHÁCARA GABI", caracteristicas2);
@@ -638,13 +632,12 @@ Chacara visualizarChacarasDisponiveis()
     {
         printf("Escolha uma chácara (1, 2 ou 3): ");
         scanf("%d", &escolha);
-    }
-    while (escolha < 1 || escolha > 3);
+    } while (escolha < 1 || escolha > 3);
 
     return chacarasDisponiveis[escolha - 1];
 }
 
-// vizualizar const de chacaras
+// ----- FUNÇÃO 12: VISUALIZAR CONSTANTES DE CHÁCARAS -----
 void visualizarConstantes(const char *nomeChacara, const char *caracteristicas[], int num)
 {
     printf("\033[1;34m%s:\n\033[0m", nomeChacara);
@@ -655,30 +648,30 @@ void visualizarConstantes(const char *nomeChacara, const char *caracteristicas[]
     printf("\n");
 }
 
-// ------------- DEFININDO A ESTRUTURA PARA ARMAZENAR INFORMAÇÕES DO USUÁRIO -------------
+// ----- ESTRUTURA: PARA ARMAZENAR INFORMAÇÕES DO USUÁRIO -----
 struct Usuario
 {
     char nome[50];
     char senha[20];
 };
-// --------------- FUNÇÃO PARA VERIFICAR O LOGIN ----------------
-int verificarLogin(struct Usuario usuarios[], int numUsuarios, char nome[],
-                   char senha[])
+
+// ------ FUNÇÃO 13: VERIFICA O LOGIN -----
+int verificarLogin(struct Usuario usuarios[], int numUsuarios, char nome[], char senha[])
 {
     for (int i = 0; i < numUsuarios; i++)
     {
         if (strcmp(usuarios[i].nome, nome) == 0 &&
-                strcmp(usuarios[i].senha, senha) == 0)
+            strcmp(usuarios[i].senha, senha) == 0)
         {
             return i; // Retorna o indice do usuario se o login for bem-sucedido
         }
     }
     return -1; // Retorna -1 se o login falhar
 }
-// *** FIM DAS FUNÇÕES DA RAFAELA ***
+// *** FIM DAS FUNÇÕES (2)***
 
-// ***INICIO DAS FUNÇÕES DO GUSTAVO ***
-// ---------------- FUNÇÃO PARA CALCULAR DIA DA SEMANA PARA DATA ESPECÍFICA (GUSTAVO) ------------------
+// ***INICIO DAS FUNÇÕES DO (3) ***
+// ------ FUNÇÃO 14: CALCULAR DIA DA SEMANA PARA DATA ESPECÍFICA -----
 int calcular_dia_semana(int ano_visita, int mes_visita, int dia_visita)
 {
     if (mes_visita < 3)
@@ -694,24 +687,24 @@ int calcular_dia_semana(int ano_visita, int mes_visita, int dia_visita)
     return dia_semana;
 }
 
-//---------------- FUNÇÃO PARA DESTACAR DIAS SELECIONADOS - COR [SAB, DOM] (GUSTAVO) ------------------
-void destaca_dias_selecionados(int mes_visita, int ano_visita, int diaAgendado,int numero_dias)
+// ------ FUNÇÃO 15: DESTACAR DIAS SELECIONADOS - COR [SAB, DOM]-----
+void destaca_dias_selecionados(int mes_visita, int ano_visita, int diaAgendado)
 {
-    char *nome_mes[] = {"",        "Janeiro",  "Fevereiro", "Março",
-                        "Abril",   "Maio",     "Junho",     "Julho",
-                        "Agosto",  "Setembro", "Outubro",   "Novembro",
-                        "Dezembro"
-                       };
+    char *nome_mes[] = {"", "Janeiro", "Fevereiro", "Março",
+                        "Abril", "Maio", "Junho", "Julho",
+                        "Agosto", "Setembro", "Outubro", "Novembro",
+                        "Dezembro"};
 
     int mes_dias[] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-    if (ano_visita % 4 == 0 && (ano_visita % 100 != 0 || ano_visita % 400 == 0)) {
+    if (ano_visita % 4 == 0 && (ano_visita % 100 != 0 || ano_visita % 400 == 0))
+    {
         mes_dias[2] = 29; // Fevereiro tem 29 dias em um ano bissexto
     }
 
     printf("\nCalendário para %s de %d\n", nome_mes[mes_visita], ano_visita);
     printf("\033[1;31mDOM\tSEG\tTER\tQUA\tQUI\tSEX\tSÁB\n\033[0m");
 
-    int mes_primeiro_dia = calcularDiaSemana(ano_visita, mes_visita, 1);
+    int mes_primeiro_dia = calcular_dia_semana(ano_visita, mes_visita, 1);
 
     for (int i = 0; i < mes_primeiro_dia; i++)
     {
@@ -721,6 +714,7 @@ void destaca_dias_selecionados(int mes_visita, int ano_visita, int diaAgendado,i
     for (int dia_visita = 1; dia_visita <= mes_dias[mes_visita]; dia_visita++)
     {
         int agendado_dia = 0;
+        int numero_dias; // Mudei essa parte
         int dia_semana = calcularDiaSemana(ano_visita, mes_visita, dia_visita);
 
         for (int i = 0; i < numero_dias; i++)
@@ -737,8 +731,8 @@ void destaca_dias_selecionados(int mes_visita, int ano_visita, int diaAgendado,i
             if (agendado_dia)
             {
                 printf("\033[1;34m%2d\033[0m\t", dia_visita); // Imprime Domingo em azul
-
-            }else
+            }
+            else
             {
                 printf("\033[1;91m%2d\033[0m\t", dia_visita); // Imprime Domingo em vermelho
             }
@@ -748,12 +742,11 @@ void destaca_dias_selecionados(int mes_visita, int ano_visita, int diaAgendado,i
             if (agendado_dia)
             {
                 printf("\033[1;34m%2d\033[0m\t", dia_visita); // Imprime Sábado em azul
-
-            }else
+            }
+            else
             {
                 printf("\033[0;90m%2d\033[0m\t", dia_visita); // Imprime Sábado em cinza
             }
-
         }
         else if (agendado_dia)
         {
@@ -768,12 +761,11 @@ void destaca_dias_selecionados(int mes_visita, int ano_visita, int diaAgendado,i
         {
             printf("\n");
         }
-
     }
     printf("\n");
-
 }
-// ---------------- FUNÇÃO PARA SOLICITAR AO USUÁRIO O DIA A SER AGENDADO PARA VISITA E DESTACÁ-LO NO CALENDÁRIO (GUSTAVO) ------------------
+
+// ------ FUNÇÃO 16: SOLICITAR AO USUÁRIO O DIA A SER AGENDADO PARA VISITA E DESTACÁ-LO NO CALENDÁRIO  -----
 void agendar_visita_calendario()
 {
     time_t now;
@@ -784,7 +776,6 @@ void agendar_visita_calendario()
     int mes_atual = local->tm_mon + 1;
     int dia_atual = local->tm_mday;
     int mes_visita, dia_visita, ano_visita;
-    int diaAgendado;
 
     while (1)
     {
@@ -795,14 +786,11 @@ void agendar_visita_calendario()
         if (ano_visita < 2023 || ano_visita > 2100)
         {
             printf("\nO ano digitado é inválido! \nO ano tem que estar no intervalo entre 2023 e 2100");
-
-
-        }else
-
-        {
-             break;
         }
-
+        else
+        {
+            break;
+        }
     }
 
     while (1)
@@ -813,160 +801,156 @@ void agendar_visita_calendario()
         if (mes_visita < 1 || mes_visita > 12)
         {
             printf("\nO mês digitado é inválido! \nO mês tem que estar no intervalo entre 1 e 12");
-
-
-        }else
+        }
+        else
 
         {
             break;
         }
-
     }
 
-    if( (mes_visita == 1) || (mes_visita == 3) || (mes_visita == 5) || (mes_visita == 7) ||
-       (mes_visita == 8) || (mes_visita == 10) || (mes_visita == 12) )
+    if ((mes_visita == 1) || (mes_visita == 3) || (mes_visita == 5) || (mes_visita == 7) ||
+        (mes_visita == 8) || (mes_visita == 10) || (mes_visita == 12))
     {
-
-        while (1)
+        do
         {
-           printf("\nDigite o dia a ser agendado para visita (entre 1 e 31): ");
-           scanf("%d", &dia_visita);
+            printf("\nDigite o dia a ser agendado para visita (entre 1 e 31): ");
+            scanf("%d", &dia_visita);
 
-           if (dia_visita >= 1 && dia_visita <= 31)
-           {
+            if (dia_visita >= 1 && dia_visita <= 31)
+            {
+                break;
+            }
+            else
+            {
+                printf("\nData inválida! \nA data tem que estar no intervalo de 1 e 31");
+            }
 
-               break;
-
-           }else
-
-           {
-               printf("\nData inválida! \nA data tem que estar no intervalo de 1 e 31");
-           }
-
-           // Verificação para garantir que o usuário não agende em datas passadas
-           if ((ano_visita < ano_visita_atual) ||
-               (ano_visita == ano_visita_atual && mes_visita < mes_atual) ||
-               (ano_visita == ano_visita_atual && mes_visita == mes_atual && dia_visita < dia_atual))
-           {
-               printf("\nNão é possível agendar para uma data que já passou\n");
-
-           }else{
-
-               break;
-           }
-        }
+        } while (1);
     }
 
-    if( (mes_visita == 4) || (mes_visita == 6) || (mes_visita == 9) || (mes_visita == 11) )
+    if ((mes_visita == 4) || (mes_visita == 6) || (mes_visita == 9) || (mes_visita == 11))
     {
-        while (1)
+        do
         {
-
             printf("\nDigite o dia a ser agendado para visita (entre 1 e 30): ");
             scanf("%d", &dia_visita);
 
             if (dia_visita >= 1 && dia_visita <= 30)
             {
-               break;
-
-            }else
-
+                break;
+            }
+            else
             {
-               printf("\nData inválida! \nA data tem que estar no intervalo de 1 e 30");
+                printf("\nData inválida! \nA data tem que estar no intervalo de 1 e 30");
             }
 
-            // Verificação para garantir que o usuário não agende em datas passadas
-            if ((ano_visita < ano_visita_atual) ||
-               (ano_visita == ano_visita_atual && mes_visita < mes_atual) ||
-               (ano_visita == ano_visita_atual && mes_visita == mes_atual && dia_visita < dia_atual))
-            {
-               printf("\nNão é possível agendar para uma data que já passou\n");
-
-            }else
-            {
-               break;
-            }
-        }
-
-
+        } while (1);
     }
 
-    if( (mes_visita == 2) )
+    if ((mes_visita == 2))
     {
-        while (1)
+        do
         {
-
             printf("\nDigite o dia a ser agendado para visita (entre 1 e 29): ");
             scanf("%d", &dia_visita);
 
             if (dia_visita >= 1 && dia_visita <= 29)
             {
-               break;
-
-            }else
-
-            {
-               printf("\nData inválida! \nA data tem que estar no intervalo de 1 e 29");
+                break;
             }
-
-            // Verificação para garantir que o usuário não agende em datas passadas
-            if ((ano_visita < ano_visita_atual) ||
-               (ano_visita == ano_visita_atual && mes_visita < mes_atual) ||
-               (ano_visita == ano_visita_atual && mes_visita == mes_atual && dia_visita < dia_atual))
+            else
             {
-               printf("\nNão é possível agendar para uma data que já passou\n");
-
-            }else
-            {
-               break;
+                printf("\nData inválida! \nA data tem que estar no intervalo de 1 e 29");
             }
-        }
-
+        } while (1);
     }
 
-    // Mostra o calendário com os dias agendados em azul
-    printf("\nCalendário com o dia de visita agendado:\n");
-    printf("======================================================\n");
-    destaca_dias_selecionados(mes_visita, ano_visita, dia_visita, diaAgendado);
-
-    //Mostra a data que foi digitada
-    printf("\n-----%d/%d/%d-----", dia_visita, mes_visita, ano_visita);
-
-    //Mostra o dia da semana dependendo do resultado da fórmula
-    switch(calcularDiaSemana(ano_visita, mes_visita, dia_visita))
+    // Verificação para garantir que o usuário não agende em datas passadas
+    if ((ano_visita < ano_visita_atual) ||
+        (ano_visita == ano_visita_atual && mes_visita < mes_atual) ||
+        (ano_visita == ano_visita_atual && mes_visita == mes_atual && dia_visita < dia_atual))
     {
+        printf("\nNão é possível agendar para uma data que já passou\n");
+    }
+    else
+    {
+        // Mostra o calendário com os dia agendado em azul
+        printf("\nCalendário com o dia de visita agendado:\n");
+        printf("======================================================\n");
+        destaca_dias_selecionados(mes_visita, ano_visita, dia_visita);
 
-    case 0:
-        printf("\nEssa data é um Domingo\n");
-        break;
-    case 1:
-        printf("\nEssa data é uma Segunda - feira\n");
-        break;
-    case 2:
-        printf("\nEssa data é uma Terça - feira\n");
-        break;
-    case 3:
-        printf("\nEssa data é uma Quarta - feira\n");
-        break;
-    case 4:
-        printf("\nEssa data é uma Quinta - feira\n");
-        break;
-    case 5:
-        printf("\nEssa data é uma Sexta - feira\n");
-        break;
-    case 6:
-        printf("\nEssa data é um Sábado\n");
-        break;
+        // Mostra a data que foi digitada
+        printf("\n-----%d/%d/%d-----", dia_visita, mes_visita, ano_visita);
+
+        // Mostra o dia da semana dependendo do resultado da fórmula
+        switch (calcularDiaSemana(ano_visita, mes_visita, dia_visita))
+        {
+        case 0:
+            printf("\nEssa data é um Domingo\n");
+            break;
+        case 1:
+            printf("\nEssa data é uma Segunda - feira\n");
+            break;
+        case 2:
+            printf("\nEssa data é uma Terça - feira\n");
+            break;
+        case 3:
+            printf("\nEssa data é uma Quarta - feira\n");
+            break;
+        case 4:
+            printf("\nEssa data é uma Quinta - feira\n");
+            break;
+        case 5:
+            printf("\nEssa data é uma Sexta - feira\n");
+            break;
+        case 6:
+            printf("\nEssa data é um Sábado\n");
+            break;
+        }
+        // Variáveis para validar a as informações das datas
+        int hora, min;
+        char opcao;
+
+        // Solicita o horário da vissita
+        printf("\n-------Digite o horário que deseja agendar a visita (Entre às 09h até às 17h)-------\n");
+        // Solicita a hora da visita
+        printf("\nDigite a hora: ");
+        scanf("\n%d", &hora);
+        // Solicita o minuto da visita
+        printf("\nDigite o minuto: ");
+        scanf("\n%d", &min);
+        // Mostra o horário da visita que foi digitado
+        printf("\n------%.2d:%.2d-----\n", hora, min);
+
+        // Não valida o horário se estiver fora do intervalo
+        while (hora < 9 || hora >= 17)
+        {
+            printf("\nHorário inválido!\n");
+            printf("\nDigite a hora novamente: ");
+            scanf("\n%d", &hora);
+            printf("\nDigite o minuto novamente: ");
+            scanf("\n%d", &min);
+        }
+
+        // Solicita a confirmação da data e horário digitados
+        printf("\nConfirma essa data e horário? (S/N)");
+        scanf("%s", &opcao);
+        if (opcao == 'S' || opcao == 's')
+        {
+            printf("\n\033[1;34mAgendamento finalizado!\033[0m\t\n");
+            system("pause");
+        }
     }
 }
 
-//** FIM DAS FUNÇÃES DO GUSTAVO
+//** FIM DAS FUNÇÃES (3)
 
-//FUNÇÃO PARA SALVAR O CONTRATO EM TXT
+// ------ FUNÇÃO 17: SALVAR O CONTRATO EM TXT  -----
 void salvarItem(const char *item, const char *nomeCliente)
 {
     FILE *arquivo;
-    char nomeArquivo[50];  // Ajuste o tamanho conforme necess�rio
+    char nomeArquivo[50]; // Ajuste o tamanho conforme necess�rio
 
     sprintf(nomeArquivo, "contrato_locacao_%s.txt", nomeCliente);
 
@@ -989,8 +973,6 @@ void salvarItem(const char *item, const char *nomeCliente)
     printf("Contrato salvo com sucesso no arquivo: %s\n", nomeArquivo);
 }
 
-
-
 // -------------------- INÍCIO DA MAIN -----------------------
 int main()
 {
@@ -1011,7 +993,7 @@ int main()
     int opcao;
     int usuarioLogado = -1;
 
-    while (1)   // Loop principal
+    while (1) // Loop principal
     {
         if (usuarioLogado == -1)
         {
@@ -1051,27 +1033,26 @@ int main()
             switch (opcao)
             {
             case 1:
-              system("cls");
+                system("cls");
 
-              printf("\n\033[1mVOC� SELECIONOU CADASTRO DE CLIENTES.\033[0m\n");
-              // Coloque a l�gica do cadastro de clientes aqui
-              printf("\n--------------------------------");
-              printf("RECANTO DOS SONHOS");
-              printf("--------------------------------\n\n");
+                printf("\n\033[1mVOC� SELECIONOU CADASTRO DE CLIENTES.\033[0m\n");
+                // Coloque a l�gica do cadastro de clientes aqui
+                printf("\n--------------------------------");
+                printf("RECANTO DOS SONHOS");
+                printf("--------------------------------\n\n");
 
-              CadastroCliente cliente1;
-              Contrato contrato1;
-              criarCadastro(&cliente1, &contrato1);
-              salvarCadastro(&cliente1, &contrato1);
+                CadastroCliente cliente1;
+                Contrato contrato1;
+                criarCadastro(&cliente1, &contrato1);
+                salvarCadastro(&cliente1, &contrato1);
 
-              system("\npause");
-              system("cls");
+                system("\npause");
+                system("cls");
 
-              break;
+                break;
 
             case 2:
                 system("cls");
-
                 printf("\n\033[1mVOCÊ SELECIONOU CADASTRO DE CHÁCARAS.\033[0m\n\n");
                 // Coloque a lógica do Cadastro de Chácaras
                 // Cadastrar novas chácaras
@@ -1089,7 +1070,6 @@ int main()
 
                 system("\npause");
                 system("cls");
-
                 break;
 
             case 3:
@@ -1098,44 +1078,40 @@ int main()
                 printf("\n\033[1mVOCÊ SELECIONOU VISUALIZAR CHÁCARAS DISPONÍVEIS.\n\n\033[0m");
                 // Coloque a lógica de Visualização de Chácaras Disponíveis
                 const char *caracteristicas1[9] =
-                {
-                    "250m²",
-                    "Estacionamento para até 10 carros",
-                    "Contém Churrasqueira",
-                    "Freezer",
-                    "2 fogões",
-                    "Wi-fi",
-                    "3 Quartos",
-                    "Geladeira",
-                    "Limpeza inclusa"
-                };
+                    {
+                        "250m²",
+                        "Estacionamento para até 10 carros",
+                        "Contém Churrasqueira",
+                        "Freezer",
+                        "2 fogões",
+                        "Wi-fi",
+                        "3 Quartos",
+                        "Geladeira",
+                        "Limpeza inclusa"};
 
                 const char *caracteristicas2[9] =
-                {
-                    "150m²",
-                    "Estacionamento para até 5 carros",
-                    "Sem Churrasqueira",
-                    "1 fogão",
-                    "Sem Freezer",
-                    "Sem Wi-fi",
-                    "1 Quarto",
-                    "Geladeira",
-                    "Limpeza não inclusa"
-                };
+                    {
+                        "150m²",
+                        "Estacionamento para até 5 carros",
+                        "Sem Churrasqueira",
+                        "1 fogão",
+                        "Sem Freezer",
+                        "Sem Wi-fi",
+                        "1 Quarto",
+                        "Geladeira",
+                        "Limpeza não inclusa"};
 
                 const char *caracteristicas3[9] =
-                {
-                    "200m²",
-                    "Estacionamento para até 8 carros",
-                    "Contém Churrasqueira",
-                    "Freezer",
-                    "2 fogões",
-                    "Wi-fi",
-                    "2 Quartos",
-                    "Geladeira",
-                    "Limpeza inclusa"
-                };
-
+                    {
+                        "200m²",
+                        "Estacionamento para até 8 carros",
+                        "Contém Churrasqueira",
+                        "Freezer",
+                        "2 fogões",
+                        "Wi-fi",
+                        "2 Quartos",
+                        "Geladeira",
+                        "Limpeza inclusa"};
 
                 visualizarConstantes("RECANTO DOS SONHOS", caracteristicas1, 9);
                 visualizarConstantes("CHÁCARA GABI", caracteristicas2, 9);
@@ -1143,7 +1119,6 @@ int main()
 
                 system("\npause");
                 system("cls");
-
                 break;
 
             case 4:
@@ -1151,45 +1126,13 @@ int main()
                 printf("Você selecionou Agenda de Visitas.\n");
                 // Coloque a logica da agenda de visitas aqui
                 printf("Escolha o mês e o ano, para visualizar as datas disponíves\n\n");
-                //Função calendario, para visualizar os dias disponiveis
+                // Função calendario, para visualizar os dias disponiveis
                 calendario();
-                //Função agendar_visita_calendario, para solicitar ao usuário o dia a ser agendado para visita e destacá-lo no calendário
+                // Função agendar_visita_calendario, para solicitar ao usuário o dia a ser agendado para visita e destacá-lo no calendário
                 agendar_visita_calendario();
-                //Variáveis para validar a as informações das datas
-                int hora, min;
-                char opcao;
-
-                //Solicita o horário da vissita
-                printf("\n-------Digite o horário que deseja agendar a visita (H:Min)-------\n");
-                //Solicita a hora da visita
-                printf("\nDigite a hora: ");
-                scanf("\n%d", &hora);
-                //Solicita o minuto da visita
-                printf("\nDigite o minuto: ");
-                scanf("\n%d", &min);
-                //Mostra o horário da visita que foi digitado
-                printf("\n------%.2d:%.2d-----\n", hora, min);
-
-                //Não valida o horário se estiver fora do intervalo
-                while(hora < 9 || hora > 17)
-                {
-                    printf("\nHorário inválido!\n");
-                    printf("\nDigite a hora novamente: ");
-                    scanf("\n%d", &hora);
-                    printf("\nDigite o minuto novamente: ");
-                    scanf("\n%d", &min);
-                }
-
-                //Solicita a confirmação da data e horário digitados
-                printf("\nConfirma essa data e horário? (S/N)");
-                scanf("%s", &opcao);
-                if (opcao == 'S' || opcao == 's')
-                {
-                    printf("\n\033[1;34mAgendamento finalizado!\033[0m\t\n");
-                    system("pause");
-                }
                 system("cls");
                 break;
+
             case 5:
                 // Coloque a lógica da agenda de diárias aqui
                 system("cls");
@@ -1198,8 +1141,8 @@ int main()
                 printf("\n\n");
                 system("pause");
                 system("cls");
-
                 break;
+
             case 6:
                 system("cls");
 
@@ -1224,7 +1167,6 @@ int main()
                 printf("\nInforme o nome do cliente: ");
                 setbuf(stdin, NULL);
                 scanf("%99[^\n]", nomeCliente);
-
 
                 // 1. DDD TELEFONE DO CLIENTE:
                 printf("\nInforme o ddd do telefone do cliente: ");
@@ -1280,8 +1222,8 @@ int main()
 
                 // 4.1 Verificação dia da locação (Meses com 31 dias)
                 if (mesEvento == 1 || mesEvento == 3 || mesEvento == 5 ||
-                        mesEvento == 7 || mesEvento == 8 || mesEvento == 10 ||
-                        mesEvento == 12)
+                    mesEvento == 7 || mesEvento == 8 || mesEvento == 10 ||
+                    mesEvento == 12)
                 {
                     while (diaEvento < 0 || diaEvento > 31)
                     {
@@ -1398,7 +1340,6 @@ int main()
 
                 system("pause");
                 system("cls");
-
                 break;
 
             case 7:
